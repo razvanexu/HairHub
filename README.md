@@ -1,4 +1,4 @@
-# Salon App
+# HairHub / HairKrishna / Hairly / HairBnB / HairBook
 
 Platformă de gestionare a programărilor pentru un salon (frizerie / coafor), construită ca MVP pentru demonstrație către un potențial client.
 
