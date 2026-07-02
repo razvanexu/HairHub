@@ -40,6 +40,9 @@ public class ServiceTypeService {
     }
 
     public void deleteById(Long id) {
+        if(!sRepo.existsById(id)) {
+            throw new RuntimeException("Service type not found");
+        }
         sRepo.deleteById(id);
     }
 }
