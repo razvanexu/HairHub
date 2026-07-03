@@ -1,6 +1,7 @@
 package com.hairhub.backend.service;
 
 import com.hairhub.backend.entity.ServiceType;
+import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.repository.ServiceTypeRepository;
 import com.hairhub.backend.service.validators.DurationValidation;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,14 +66,14 @@ class ServiceTypeServiceTest {
     }
 
     @Test
-    void findById_withNonExistentId_throwsRuntimeException() {
+    void findById_withNonExistentId_throwsEntityNotFoundException() {
         //Given
         Long id = 999L;
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         //When
         //Then
-        assertThrows(RuntimeException.class, () -> service.findById(id));
+        assertThrows(EntityNotFoundException.class, () -> service.findById(id));
     }
 
     @Test
@@ -93,14 +94,14 @@ class ServiceTypeServiceTest {
     }
 
     @Test
-    void findByName_withNonExistentName_throwsRuntimeException() {
+    void findByName_withNonExistentName_throwsEntityNotFoundException() {
         //Given
         String name = "Smaranda";
         when(repository.findByName(name)).thenReturn(Optional.empty());
 
         //When
         //Then
-        assertThrows(RuntimeException.class, () -> service.findByName(name));
+        assertThrows(EntityNotFoundException.class, () -> service.findByName(name));
     }
 
     @Test
@@ -134,7 +135,7 @@ class ServiceTypeServiceTest {
     }
 
     @Test
-    void deleteById_withValidId_throwsRuntimeException() {
+    void deleteById_withNonExistentId_throwsEntityNotFoundException() {
         //Given
         Long id = 999L;
         when(repository.existsById(id)).thenReturn(false);
@@ -142,7 +143,7 @@ class ServiceTypeServiceTest {
         //When
 
         //Then
-        assertThrows(RuntimeException.class, () -> service.deleteById(id));
+        assertThrows(EntityNotFoundException.class, () -> service.deleteById(id));
         verify(repository, never()).deleteById(id);
     }
 }

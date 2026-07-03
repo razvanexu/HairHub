@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> {
     Optional<ServiceType> findByName(String name);
+    void deleteByName(String name);
 }

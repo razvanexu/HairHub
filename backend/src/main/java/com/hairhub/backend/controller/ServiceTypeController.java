@@ -66,4 +66,10 @@ public class ServiceTypeController {
         serviceTypeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/name/{name}")
+    public ResponseEntity<Void> deleteServiceTypeByName(@PathVariable String name) {
+        serviceTypeService.deleteByName(name);
+        return ResponseEntity.noContent().build();
+    }
 }
