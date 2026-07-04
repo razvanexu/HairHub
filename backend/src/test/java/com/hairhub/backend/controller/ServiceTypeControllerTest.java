@@ -216,7 +216,7 @@ class ServiceTypeControllerTest {
     @Test
     void updateServiceType_withNullName_returns400() throws Exception{
         //Given
-        ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1l, null, 60);
+        ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1L, null, 60);
 
         //When //Then
         mockMvc.perform(put("/service-types/1")
@@ -228,7 +228,7 @@ class ServiceTypeControllerTest {
     @Test
     void updateServiceType_withBlankName_returns400() throws Exception{
         //Given
-        ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1l, " ", 60);
+        ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1L, " ", 60);
 
         //When //Then
         mockMvc.perform(put("/service-types/1")
@@ -295,5 +295,4 @@ class ServiceTypeControllerTest {
         mockMvc.perform(delete("/service-types/name/" + name))
                 .andExpect(status().isNotFound());
     }
-
 }
