@@ -23,37 +23,41 @@ public class ClientService {
     public Client create(Client client) {
         phoneValidation.validate(client.getPhone());
         Client saved = clientRepository.save(client);
-        log.info("Client with id {} has been created", saved.getId());
+        log.info("[create] Client with id {} has been created", saved.getId());
         return saved;
     }
 
     public Client update(Client client){
         phoneValidation.validate(client.getPhone());
         Client updated = clientRepository.save(client);
-        log.info("Client with id {} has been updated", client.getId());
+        log.info("[update] Client with id {} has been updated", client.getId());
         return updated;
     }
 
     public Client findById(Long id){
         return clientRepository.findById(id)
                 .orElseThrow(()->{
-                    log.warn("Client with id {} not found", id);
+                    log.warn("[findById] Client with id {} not found", id);
                     return new EntityNotFoundException("Client with id " + id + " not found");
                 });
     }
 
     public List<Client> findByName(String name){
-        return clientRepository.findByName(name);
+        List<Client> namedClients =  clientRepository.findByName(name);
+        log.debug("[findByName] Found {} client(s)", namedClients.size());
+        return namedClients;
     }
 
     public List<Client> findAll(){
-        return clientRepository.findAll();
+        List<Client> allClients =  clientRepository.findAll();
+        log.debug("[findAll] Found {} client(s)", allClients.size());
+        return allClients;
     }
 
     public Client findByPhone(String phone){
         return clientRepository.findByPhone(phone)
                 .orElseThrow(()->{
-                    log.warn("Client with Phone {} not found", phone);
+                    log.warn("[findByPhone] Client with Phone {} not found", phone);
                     return new EntityNotFoundException("Client with Phone " + phone + " not found");
                 });
     }
@@ -61,23 +65,27 @@ public class ClientService {
     public Client findByEmail(String email){
         return clientRepository.findByEmail(email)
                 .orElseThrow(()->{
-                    log.warn("Client with Email {} not found", email);
+                    log.warn("[findByEmail] Client with Email {} not found", email);
                     return new EntityNotFoundException("Client with Email " + email + " not found");
                 });
     }
 
     public List<Client> findAllActive() {
-        return clientRepository.findByIsActiveIsTrue();
+        List<Client> activeClients =  clientRepository.findByIsActiveIsTrue();
+        log.debug("[findAllActive] Found {} client(s)", activeClients.size());
+        return activeClients;
     }
 
     public List<Client> findAllInactive() {
-        return clientRepository.findByIsActiveIsFalse();
+        List<Client> inactiveClients =  clientRepository.findByIsActiveIsFalse();
+        log.debug("[findAllInactive] Found {} client(s)", inactiveClients.size());
+        return inactiveClients;
     }
 
     public void deactivate(Long id) {
         Client client = findById(id);
         client.setIsActive(false);
         clientRepository.save(client);
-        log.info("Client with id {} has been deactivated", id);
+        log.info("[deactivate] Client with id {} has been deactivated", id);
     }
 }
