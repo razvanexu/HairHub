@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class ClientService {
+    private static final String NOT_FOUND_SUFFIX = " not found";
     private final ClientRepository clientRepository;
     private final PhoneValidation phoneValidation;
 
@@ -38,7 +39,7 @@ public class ClientService {
         return clientRepository.findById(id)
                 .orElseThrow(()->{
                     log.warn("[findById] Client with id {} not found", id);
-                    return new EntityNotFoundException("Client with id " + id + " not found");
+                    return new EntityNotFoundException("Client with id " + id + NOT_FOUND_SUFFIX);
                 });
     }
 
@@ -58,7 +59,7 @@ public class ClientService {
         return clientRepository.findByPhone(phone)
                 .orElseThrow(()->{
                     log.warn("[findByPhone] Client with Phone {} not found", phone);
-                    return new EntityNotFoundException("Client with Phone " + phone + " not found");
+                    return new EntityNotFoundException("Client with Phone " + phone + NOT_FOUND_SUFFIX);
                 });
     }
 
@@ -66,7 +67,7 @@ public class ClientService {
         return clientRepository.findByEmail(email)
                 .orElseThrow(()->{
                     log.warn("[findByEmail] Client with Email {} not found", email);
-                    return new EntityNotFoundException("Client with Email " + email + " not found");
+                    return new EntityNotFoundException("Client with Email " + email + NOT_FOUND_SUFFIX);
                 });
     }
 

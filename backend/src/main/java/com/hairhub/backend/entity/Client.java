@@ -5,28 +5,27 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name = "customers")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NotBlank
     private String phone;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NotBlank
     @Email
     private String email;
 
-    private Boolean hasAccount = false;
-
+    @Column(nullable = false)
     private Boolean isActive;
-
-    private String passwordHash;
 
     public Client() {}
 
@@ -66,22 +65,6 @@ public class Client {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Boolean getHasAccount() {
-        return hasAccount;
-    }
-
-    public void setHasAccount(Boolean hasAccount) {
-        this.hasAccount = hasAccount;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
     public Boolean getIsActive() {
