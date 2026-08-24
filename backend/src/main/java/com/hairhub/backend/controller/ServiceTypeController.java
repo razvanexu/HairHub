@@ -38,9 +38,9 @@ public class ServiceTypeController {
         return ResponseEntity.status(201).body(serviceTypeMapper.toServiceTypeDTO(saved));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/servicetype/{id}")
     public ResponseEntity<ServiceTypeDTO> getServiceTypeById(@PathVariable Long id) {
-        ServiceType service =  serviceTypeService.findById(id);
+        ServiceType service = serviceTypeService.findById(id);
         ServiceTypeDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(service);
         return ResponseEntity.ok(sTypeDTO);
     }
@@ -48,13 +48,13 @@ public class ServiceTypeController {
     @GetMapping("/name/{name}")
     public ResponseEntity<ServiceTypeDTO> getServiceTypeByName(@PathVariable String name) {
         ServiceType serviceType = serviceTypeService.findByName(name);
-        ServiceTypeDTO sTypeDTO =  serviceTypeMapper.toServiceTypeDTO(serviceType);
+        ServiceTypeDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(serviceType);
         return ResponseEntity.ok(sTypeDTO);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ServiceTypeDTO> updateServiceType(@Valid @RequestBody ServiceTypeDTO serviceTypeDTO, @PathVariable Long id) {
-        ServiceType existing =  serviceTypeService.findById(id);
+        ServiceType existing = serviceTypeService.findById(id);
         existing.setName(serviceTypeDTO.name());
         existing.setDuration(serviceTypeDTO.duration());
         ServiceType updated = serviceTypeService.update(existing);

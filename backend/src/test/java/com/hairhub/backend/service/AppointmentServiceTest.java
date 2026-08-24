@@ -1,5 +1,6 @@
 package com.hairhub.backend.service;
 
+import com.hairhub.backend.dto.AppointmentCreateDTO;
 import com.hairhub.backend.entity.Appointment;
 import com.hairhub.backend.entity.Client;
 import com.hairhub.backend.entity.Employee;
@@ -7,7 +8,11 @@ import com.hairhub.backend.entity.ServiceType;
 import com.hairhub.backend.entity.enums.AppointmentStatus;
 import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
+import com.hairhub.backend.mapper.AppointmentMapper;
 import com.hairhub.backend.repository.AppointmentRepository;
+import com.hairhub.backend.repository.ClientRepository;
+import com.hairhub.backend.repository.EmployeeRepository;
+import com.hairhub.backend.repository.ServiceTypeRepository;
 import com.hairhub.backend.service.validators.OverlapValidation;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +33,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AppointmentServiceTest {
     @Mock
+    private ClientRepository clientRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
+
+    @Mock
     private AppointmentRepository appointmentRepository;
+
+    @Mock
+    ServiceTypeRepository serviceTypeRepository;
+
+    @Mock
+    AppointmentMapper appointmentMapper;
 
     @Mock
     private OverlapValidation validation;
@@ -37,43 +54,55 @@ class AppointmentServiceTest {
 
     @BeforeEach
     void setup() {
-        appointmentService = new AppointmentService(appointmentRepository, validation);
+        appointmentService = new AppointmentService(appointmentRepository,
+                clientRepository, employeeRepository, appointmentMapper, serviceTypeRepository, validation);
     }
 
     @Test
     void create_withNoConflict_savesAndReturnsAppointment() {
         //Given
+        Long employeeId = 1L;
+        Long serviceTypeId = 1L;
         Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
-        LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
-        Appointment appointment = new Appointment(null, employee,
-                tuns, startTime, 30, AppointmentStatus.CONFIRMED);
+        LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
+        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime, 30);
+        Appointment mappedAppointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.PENDING);
 
-        when(appointmentRepository.save(appointment)).thenReturn(appointment);
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        when(serviceTypeRepository.findById(serviceTypeId)).thenReturn(Optional.of(tuns));
+        when(appointmentMapper.toAppointment(dto, null, employee, tuns)).thenReturn(mappedAppointment);
+        when(appointmentRepository.save(mappedAppointment)).thenReturn(mappedAppointment);
 
         //When
-        Appointment result = appointmentService.create(appointment);
+        Appointment result = appointmentService.create(dto);
 
         //Then
         assertEquals(employee, result.getEmployee());
         assertEquals(startTime, result.getStartTime());
-        assertEquals(AppointmentStatus.CONFIRMED, result.getAppointmentStatus());
+        assertEquals(AppointmentStatus.PENDING, result.getAppointmentStatus());
+        verify(appointmentRepository).save(mappedAppointment);
     }
 
     @Test
     void create_withConflict_throwsValidationException_doesNotSave() {
         //Given
+        Long employeeId = 1L;
+        Long serviceTypeId = 2L;
         Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
-        LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
-        Appointment appointment = new Appointment(null, employee,
-                tuns, startTime, 30, AppointmentStatus.CONFIRMED);
+        LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
+        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime, 30);
+        Appointment mappedAppointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.PENDING);
 
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        when(serviceTypeRepository.findById(serviceTypeId)).thenReturn(Optional.of(tuns));
+        when(appointmentMapper.toAppointment(dto, null, employee, tuns)).thenReturn(mappedAppointment);
         doThrow(new ValidationException("Overlap"))
                 .when(validation).validate(employee, startTime, 30, null);
 
         //When //Then
-        assertThrows(ValidationException.class, () -> appointmentService.create(appointment));
+        assertThrows(ValidationException.class, () -> appointmentService.create(dto));
         verify(appointmentRepository, never()).save(any());
     }
 
