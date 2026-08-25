@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ServiceTypeMapperTest {
-    private ServiceTypeMapper mapper =new ServiceTypeMapper();
+    private final ServiceTypeMapper mapper = new ServiceTypeMapper();
 
     @Test
     void toServiceType_mapAllFieldsCorrectly() {
