@@ -38,7 +38,7 @@ public class ServiceTypeController {
         return ResponseEntity.status(201).body(serviceTypeMapper.toServiceTypeDTO(saved));
     }
 
-    @GetMapping("/servicetype/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ServiceTypeDTO> getServiceTypeById(@PathVariable Long id) {
         ServiceType service = serviceTypeService.findById(id);
         ServiceTypeDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(service);
