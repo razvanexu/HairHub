@@ -59,7 +59,7 @@ class AppointmentControllerTest {
     @Test
     void getAppointmens_returnsEmptyList() throws Exception {
         //Given
-        when(appointmentService.findAll()).thenReturn(List.of());
+        when(appointmentService.search(null, null, null)).thenReturn(List.of());
 
         //When //Then
         mockMvc.perform(get("/appointments"))
