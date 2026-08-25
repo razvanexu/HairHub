@@ -54,5 +54,4 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentsList);
     }
 
-
 }
