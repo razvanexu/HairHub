@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name="employees")
+@Table(name = "employees")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +34,10 @@ public class Employee {
     @Column(nullable = false)
     private Boolean isActive;
 
-    public Employee(){}
+    public Employee() {
+    }
 
-    public Employee(String name, String phone, String email, EmployeeRole role){
+    public Employee(String name, String phone, String email, EmployeeRole role) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -44,9 +45,9 @@ public class Employee {
         this.isActive = true;
     }
 
-    public Long getId(){ return id; }
-
-    public void setId(Long id){ this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

@@ -36,7 +36,7 @@ class ServiceTypeServiceTest {
     @Test
     void create_withValidServiceType_savesAndReturns() {
         //Given
-        ServiceType input  = new ServiceType("Tuns", 30);
+        ServiceType input = new ServiceType("Tuns", 30);
         when(repository.save(input)).thenReturn(input);
 
         //When
@@ -52,8 +52,10 @@ class ServiceTypeServiceTest {
     void findById_withExistingId_returnsServiceType() {
         //Given
         Long id = 1L;
-        ServiceType input  = new ServiceType("Tuns", 30);
-        input.setId(id);
+        ServiceType input = mock(ServiceType.class);
+        when(input.getId()).thenReturn(1L);
+        when(input.getName()).thenReturn("Tuns");
+        when(input.getDuration()).thenReturn(30);
         when(repository.findById(id)).thenReturn(Optional.of(input));
 
         //When
@@ -79,16 +81,18 @@ class ServiceTypeServiceTest {
     @Test
     void findByName_withValidServiceType_returnsServiceType() {
         //Given
-        Long id = 1L;
-        ServiceType input  = new ServiceType("Tuns", 30);
-        input.setId(id);
+        ServiceType input = mock(ServiceType.class);
+        when(input.getId()).thenReturn(1L);
+        when(input.getName()).thenReturn("Tuns");
+        when(input.getDuration()).thenReturn(30);
+
         when(repository.findByName(input.getName())).thenReturn(Optional.of(input));
 
         //When
         ServiceType result = service.findByName(input.getName());
 
         //Then
-        assertEquals(id, result.getId());
+        assertEquals(1L, result.getId());
         assertEquals("Tuns", result.getName());
         assertEquals(30, result.getDuration());
     }
@@ -107,8 +111,8 @@ class ServiceTypeServiceTest {
     @Test
     void findAll_withValidServiceType_returnsAllServiceTypes() {
         //Given
-        ServiceType s1  = new ServiceType("Tuns", 30);
-        ServiceType s2  = new ServiceType("Coafor", 60);
+        ServiceType s1 = new ServiceType("Tuns", 30);
+        ServiceType s2 = new ServiceType("Coafor", 60);
         when(repository.findAll()).thenReturn(List.of(s1, s2));
 
         //When
@@ -122,7 +126,7 @@ class ServiceTypeServiceTest {
     }
 
     @Test
-    void deleteById_withValidId_deletesServiceTypeById(){
+    void deleteById_withValidId_deletesServiceTypeById() {
         //Given
         Long id = 1L;
         when(repository.existsById(id)).thenReturn(true);

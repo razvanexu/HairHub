@@ -1,6 +1,7 @@
 package com.hairhub.backend.controller;
 
-import com.hairhub.backend.dto.ServiceTypeDTO;
+import com.hairhub.backend.dto.ServiceTypeCreateDTO;
+import com.hairhub.backend.dto.ServiceTypeResponseDTO;
 import com.hairhub.backend.entity.ServiceType;
 import com.hairhub.backend.mapper.ServiceTypeMapper;
 import com.hairhub.backend.service.ServiceTypeService;
@@ -23,8 +24,8 @@ public class ServiceTypeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ServiceTypeDTO>> getServiceTypes() {
-        List<ServiceTypeDTO> sTypeList = serviceTypeService.findAll()
+    public ResponseEntity<List<ServiceTypeResponseDTO>> getServiceTypes() {
+        List<ServiceTypeResponseDTO> sTypeList = serviceTypeService.findAll()
                 .stream()
                 .map(serviceTypeMapper::toServiceTypeDTO)
                 .toList();
@@ -32,33 +33,24 @@ public class ServiceTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<ServiceTypeDTO> postServiceType(@Valid @RequestBody ServiceTypeDTO serviceTypeDTO) {
+    public ResponseEntity<ServiceTypeResponseDTO> postServiceType(@Valid @RequestBody ServiceTypeCreateDTO serviceTypeDTO) {
         ServiceType serviceType = serviceTypeMapper.toServiceType(serviceTypeDTO);
         ServiceType saved = serviceTypeService.create(serviceType);
         return ResponseEntity.status(201).body(serviceTypeMapper.toServiceTypeDTO(saved));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ServiceTypeDTO> getServiceTypeById(@PathVariable Long id) {
+    public ResponseEntity<ServiceTypeResponseDTO> getServiceTypeById(@PathVariable Long id) {
         ServiceType service = serviceTypeService.findById(id);
-        ServiceTypeDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(service);
+        ServiceTypeResponseDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(service);
         return ResponseEntity.ok(sTypeDTO);
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<ServiceTypeDTO> getServiceTypeByName(@PathVariable String name) {
+    public ResponseEntity<ServiceTypeResponseDTO> getServiceTypeByName(@PathVariable String name) {
         ServiceType serviceType = serviceTypeService.findByName(name);
-        ServiceTypeDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(serviceType);
+        ServiceTypeResponseDTO sTypeDTO = serviceTypeMapper.toServiceTypeDTO(serviceType);
         return ResponseEntity.ok(sTypeDTO);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ServiceTypeDTO> updateServiceType(@Valid @RequestBody ServiceTypeDTO serviceTypeDTO, @PathVariable Long id) {
-        ServiceType existing = serviceTypeService.findById(id);
-        existing.setName(serviceTypeDTO.name());
-        existing.setDuration(serviceTypeDTO.duration());
-        ServiceType updated = serviceTypeService.update(existing);
-        return ResponseEntity.ok(serviceTypeMapper.toServiceTypeDTO(updated));
     }
 
     @DeleteMapping("/{id}")
@@ -71,5 +63,14 @@ public class ServiceTypeController {
     public ResponseEntity<Void> deleteServiceTypeByName(@PathVariable String name) {
         serviceTypeService.deleteByName(name);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ServiceTypeResponseDTO> updateServiceType(
+            @Valid @RequestBody ServiceTypeCreateDTO dto, @PathVariable Long id) {
+        ServiceType existing = serviceTypeService.findById(id);
+        serviceTypeMapper.updateServiceType(existing, dto);
+        ServiceType updated = serviceTypeService.update(existing);
+        return ResponseEntity.ok(serviceTypeMapper.toServiceTypeDTO(updated));
     }
 }
