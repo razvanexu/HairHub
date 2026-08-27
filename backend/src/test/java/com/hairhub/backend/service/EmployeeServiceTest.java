@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,12 +29,12 @@ class EmployeeServiceTest {
     private EmployeeService employeeService;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         employeeService = new EmployeeService(employeeRepository, phoneValidation);
     }
 
     @Test
-    void create_withValidEmployee_savesAndReturnsEmployee(){
+    void create_withValidEmployee_savesAndReturnsEmployee() {
         //Given
         Employee input = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
         when(employeeRepository.save(input)).thenReturn(input);
@@ -54,19 +51,19 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void create_withInvalidPhone_throwsException(){
+    void create_withInvalidPhone_throwsException() {
         //Given
         Employee input = new Employee("Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
         doThrow(new ValidationException("Invalid Phone"))
                 .when(phoneValidation).validate(input.getPhone());
 
         //When //Then
-        assertThrows(ValidationException.class, ()->employeeService.create(input));
+        assertThrows(ValidationException.class, () -> employeeService.create(input));
         verify(employeeRepository, never()).save(input);
     }
 
     @Test
-    void update_withValidEmployee_savesAndReturns(){
+    void update_withValidEmployee_savesAndReturns() {
         //Given
         Employee input = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
         input.setName("Vasile");
@@ -86,23 +83,27 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void update_withInvalidPhone_throwsException(){
+    void update_withInvalidPhone_throwsException() {
         //Given
         Employee input = new Employee("Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
         doThrow(new ValidationException("Invalid Phone"))
                 .when(phoneValidation).validate(input.getPhone());
 
         //When //Then
-        assertThrows(ValidationException.class, ()->employeeService.update(input));
+        assertThrows(ValidationException.class, () -> employeeService.update(input));
         verify(employeeRepository, never()).save(input);
     }
 
     @Test
-    void findById_withExistentId_returnsEmployee(){
+    void findById_withExistentId_returnsEmployee() {
         //Given
         Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
+        Employee employee = mock(Employee.class);
+        when(employee.getId()).thenReturn(1L);
+        when(employee.getName()).thenReturn("Ion");
+        when(employee.getPhone()).thenReturn("0734654749");
+        when(employee.getEmail()).thenReturn("ion@test.ro");
+        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
 
         //When
@@ -117,7 +118,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findById_withNonExistentId_throwsEntityNotFoundException(){
+    void findById_withNonExistentId_throwsEntityNotFoundException() {
         //Given
         Long id = 999L;
         when(employeeRepository.findById(id)).thenReturn(Optional.empty());
@@ -125,11 +126,11 @@ class EmployeeServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->employeeService.findById(id));
+        assertThrows(EntityNotFoundException.class, () -> employeeService.findById(id));
     }
 
     @Test
-    void findById_negativeId_throwsEntityNotFoundException(){
+    void findById_negativeId_throwsEntityNotFoundException() {
         //Given
         Long id = -1L;
         when(employeeRepository.findById(id)).thenReturn(Optional.empty());
@@ -137,15 +138,18 @@ class EmployeeServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->employeeService.findById(id));
+        assertThrows(EntityNotFoundException.class, () -> employeeService.findById(id));
     }
 
     @Test
-    void findByPhone_withExistentPhoneNumber_returnsEmployee(){
+    void findByPhone_withExistentPhoneNumber_returnsEmployee() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
+        Employee employee = mock(Employee.class);
+        when(employee.getId()).thenReturn(1L);
+        when(employee.getName()).thenReturn("Ion");
+        when(employee.getPhone()).thenReturn("0734654749");
+        when(employee.getEmail()).thenReturn("ion@test.ro");
+        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findByPhone(employee.getPhone())).thenReturn(Optional.of(employee));
 
         //When
@@ -160,7 +164,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findByPhone_withNonExistentPhoneNumber_throwsEntityNotFoundException(){
+    void findByPhone_withNonExistentPhoneNumber_throwsEntityNotFoundException() {
         //Given
         String missing = "0745678418";
         when(employeeRepository.findByPhone(missing)).thenReturn(Optional.empty());
@@ -168,15 +172,18 @@ class EmployeeServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->employeeService.findByPhone(missing));
+        assertThrows(EntityNotFoundException.class, () -> employeeService.findByPhone(missing));
     }
 
     @Test
-    void findByEmail_withExistentEmail_returnsEmployee(){
+    void findByEmail_withExistentEmail_returnsEmployee() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
+        Employee employee = mock(Employee.class);
+        when(employee.getId()).thenReturn(1L);
+        when(employee.getName()).thenReturn("Ion");
+        when(employee.getPhone()).thenReturn("0734654749");
+        when(employee.getEmail()).thenReturn("ion@test.ro");
+        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findByEmail(employee.getEmail())).thenReturn(Optional.of(employee));
 
         //When
@@ -191,7 +198,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findByEmail_withNonExistentEmail_throwsEntityNotFoundException(){
+    void findByEmail_withNonExistentEmail_throwsEntityNotFoundException() {
         //Given
         String missing = "missing@de.ro";
         when(employeeRepository.findByEmail(missing)).thenReturn(Optional.empty());
@@ -199,15 +206,14 @@ class EmployeeServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->employeeService.findByEmail(missing));
+        assertThrows(EntityNotFoundException.class, () -> employeeService.findByEmail(missing));
     }
 
     @Test
-    void findByName_withExistentName_returnsEmployeeList(){
+    void findByName_withExistentName_returnsEmployeeList() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
+        Employee employee = mock(Employee.class);
+        when(employee.getName()).thenReturn("Ion");
         when(employeeRepository.findByName(employee.getName())).thenReturn(List.of(employee));
 
         //When
@@ -219,7 +225,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findByName_withNonExistentName_returnsEmptyList(){
+    void findByName_withNonExistentName_returnsEmptyList() {
         //Given
         String missing = "missing";
         when(employeeRepository.findByName(missing)).thenReturn(List.of());
@@ -232,11 +238,10 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findByRole_withExistentRole_returnsEmployeeList(){
+    void findByRole_withExistentRole_returnsEmployeeList() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
+        Employee employee = mock(Employee.class);
+        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findByRole(employee.getRole())).thenReturn(List.of(employee));
 
         //When
@@ -248,7 +253,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findByRole_withNoMatches_returnsEmptyList(){
+    void findByRole_withNoMatches_returnsEmptyList() {
         //Given
         when(employeeRepository.findByRole(EmployeeRole.OWNER)).thenReturn(List.of());
 
@@ -260,11 +265,14 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findAll_returnsEmployeeList(){
+    void findAll_returnsEmployeeList() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
+        Employee employee = mock(Employee.class);
+        when(employee.getId()).thenReturn(1L);
+        when(employee.getName()).thenReturn("Ion");
+        when(employee.getPhone()).thenReturn("0734654749");
+        when(employee.getEmail()).thenReturn("ion@test.ro");
+        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findAll()).thenReturn(List.of(employee));
 
         //When
@@ -280,12 +288,10 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findAllActive_returnsEmployeeList_withActive(){
+    void findAllActive_returnsEmployeeList_withActive() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
-        employee.setIsActive(true);
+        Employee employee = mock(Employee.class);
+        when(employee.getIsActive()).thenReturn(true);
         when(employeeRepository.findByIsActiveIsTrue()).thenReturn(List.of(employee));
 
         //When
@@ -297,12 +303,10 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findAllInactive_returnsEmployeeList_withInactive(){
+    void findAllInactive_returnsEmployeeList_withInactive() {
         //Given
-        Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
-        employee.setIsActive(false);
+        Employee employee = mock(Employee.class);
+        when(employee.getIsActive()).thenReturn(false);
         when(employeeRepository.findByIsActiveIsFalse()).thenReturn(List.of(employee));
 
         //When
@@ -314,12 +318,12 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void deactivate_withValidId_setIsInactiveAndSaves(){
+    void deactivate_withValidId_setIsInactiveAndSaves() {
         //Given
         Long id = 1L;
-        Employee employee = new Employee("Ion", "0734654749", "ion@test.ro", EmployeeRole.FRIZER);
-        employee.setId(id);
-        employee.setIsActive(true);
+        Employee employee = mock(Employee.class);
+        when(employee.getId()).thenReturn(1L);
+        when(employee.getIsActive()).thenReturn(false);
         when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
 
         //When
@@ -331,7 +335,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void deactivate_withInvalidId_throwsEntityNotFoundException(){
+    void deactivate_withInvalidId_throwsEntityNotFoundException() {
         //Given
         Long notFound = 999L;
         when(employeeRepository.findById(notFound)).thenReturn(Optional.empty());
@@ -339,7 +343,7 @@ class EmployeeServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->employeeService.deactivate(notFound));
+        assertThrows(EntityNotFoundException.class, () -> employeeService.deactivate(notFound));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.hairhub.backend.controller;
 
-import com.hairhub.backend.dto.ServiceTypeDTO;
+import com.hairhub.backend.dto.ServiceTypeCreateDTO;
+import com.hairhub.backend.dto.ServiceTypeResponseDTO;
 import com.hairhub.backend.entity.ServiceType;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.mapper.ServiceTypeMapper;
@@ -52,8 +53,7 @@ class ServiceTypeControllerTest {
     void getServiceTypes_returnsListWithItems() throws Exception {
         //Given
         ServiceType serviceType = new ServiceType("Tuns", 30);
-        serviceType.setId(1L);
-        ServiceTypeDTO serviceTypeDTO = new ServiceTypeDTO(1L, "Tuns", 30);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(1L, "Tuns", 30);
 
         when(serviceTypeService.findAll()).thenReturn(List.of(serviceType));
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
@@ -70,8 +70,7 @@ class ServiceTypeControllerTest {
     void getServiceTypeById_withExistingId_returns200() throws Exception {
         //Given
         ServiceType serviceType = new ServiceType("Tuns", 30);
-        serviceType.setId(1L);
-        ServiceTypeDTO serviceTypeDTO = new ServiceTypeDTO(1L, "Tuns", 30);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(1L, "Tuns", 30);
 
         when(serviceTypeService.findById(1L)).thenReturn(serviceType);
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
@@ -88,8 +87,7 @@ class ServiceTypeControllerTest {
     void getServiceTypeByName_withExistingName_returns200() throws Exception {
         //Given
         ServiceType serviceType = new ServiceType("Tuns", 30);
-        serviceType.setId(1L);
-        ServiceTypeDTO serviceTypeDTO = new ServiceTypeDTO(1L, "Tuns", 30);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(1L, "Tuns", 30);
 
         when(serviceTypeService.findByName("Tuns")).thenReturn(serviceType);
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
@@ -127,13 +125,12 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void postServiceType_withValidData_returns201()  throws Exception {
+    void postServiceType_withValidData_returns201() throws Exception {
         //Given
-        ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, "Tuns", 30);
+        ServiceTypeCreateDTO inputDTO = new ServiceTypeCreateDTO("Tuns", 30);
         ServiceType entity = new ServiceType("Tuns", 30);
         ServiceType saved = new ServiceType("Tuns", 30);
-        saved.setId(1L);
-        ServiceTypeDTO outputDto = new ServiceTypeDTO(1L, "Tuns", 30);
+        ServiceTypeResponseDTO outputDto = new ServiceTypeResponseDTO(1L, "Tuns", 30);
 
         when(serviceTypeMapper.toServiceType(inputDTO)).thenReturn(entity);
         when(serviceTypeService.create(entity)).thenReturn(saved);
@@ -150,21 +147,9 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void postServiceType_withEmptyName_returns400()  throws Exception{
+    void postServiceType_withEmptyName_returns400() throws Exception {
         //Given
-        ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, "", 30);
-
-        //When //Then
-        mockMvc.perform(post("/service-type")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(inputDTO)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void postServiceType_withNullName_returns400()  throws Exception{
-        //Given
-        ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, null, 30);
+        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, "", 30);
 
         //When //Then
         mockMvc.perform(post("/service-type")
@@ -174,9 +159,9 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void postServiceType_withNullDuration_returns400()  throws Exception{
+    void postServiceType_withNullName_returns400() throws Exception {
         //Given
-        ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, "Tuns", null);
+        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, null, 30);
 
         //When //Then
         mockMvc.perform(post("/service-type")
@@ -186,18 +171,28 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void updateServiceType_withValidData_returns200() throws Exception{
+    void postServiceType_withNullDuration_returns400() throws Exception {
+        //Given
+        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, "Tuns", null);
+
+        //When //Then
+        mockMvc.perform(post("/service-type")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateServiceType_withValidData_returns200() throws Exception {
         //Given
         Long id = 1L;
         ServiceType existing = new ServiceType("Tuns", 30);
-        existing.setId(id);
 
-        ServiceTypeDTO inputDTO = new ServiceTypeDTO(null,"Coafor", 60);
+        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, "Coafor", 60);
 
         ServiceType updated = new ServiceType("Coafor", 60);
-        updated.setId(id);
 
-        ServiceTypeDTO updatedDTO = new ServiceTypeDTO(id, "Coafor", 60);
+        ServiceTypeResponseDTO updatedDTO = new ServiceTypeResponseDTO(id, "Coafor", 60);
 
         when(serviceTypeService.findById(id)).thenReturn(existing);
         when(serviceTypeService.update(existing)).thenReturn(updated);
@@ -214,21 +209,9 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void updateServiceType_withNullName_returns400() throws Exception{
+    void updateServiceType_withNullName_returns400() throws Exception {
         //Given
-        ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1L, null, 60);
-
-        //When //Then
-        mockMvc.perform(put("/service-type/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidDTO)))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void updateServiceType_withBlankName_returns400() throws Exception{
-        //Given
-        ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1L, " ", 60);
+        ServiceTypeResponseDTO invalidDTO = new ServiceTypeResponseDTO(1L, null, 60);
 
         //When //Then
         mockMvc.perform(put("/service-type/1")
@@ -238,10 +221,22 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void updateServiceType_withNonExistentId_returns400() throws Exception{
+    void updateServiceType_withBlankName_returns400() throws Exception {
+        //Given
+        ServiceTypeResponseDTO invalidDTO = new ServiceTypeResponseDTO(1L, " ", 60);
+
+        //When //Then
+        mockMvc.perform(put("/service-type/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateServiceType_withNonExistentId_returns400() throws Exception {
         //Given
         Long id = 999L;
-        ServiceTypeDTO inputDto = new ServiceTypeDTO(null, "Tuns", 30);
+        ServiceTypeResponseDTO inputDto = new ServiceTypeResponseDTO(null, "Tuns", 30);
         when(serviceTypeService.findById(id))
                 .thenThrow(new EntityNotFoundException("Service type with id 999 not found"));
 
@@ -253,7 +248,7 @@ class ServiceTypeControllerTest {
     }
 
     @Test
-    void deleteServiceType_withValidId_returns204()  throws Exception {
+    void deleteServiceType_withValidId_returns204() throws Exception {
         //Given
         Long id = 1L;
 
