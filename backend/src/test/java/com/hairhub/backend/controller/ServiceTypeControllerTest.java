@@ -42,7 +42,7 @@ class ServiceTypeControllerTest {
         when(serviceTypeService.findAll()).thenReturn(List.of());
 
         //When //Then
-        mockMvc.perform(get("/service-types"))
+        mockMvc.perform(get("/service-type"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
@@ -59,7 +59,7 @@ class ServiceTypeControllerTest {
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
 
         //When //Then
-        mockMvc.perform(get("/service-types"))
+        mockMvc.perform(get("/service-type"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Tuns"))
@@ -77,7 +77,7 @@ class ServiceTypeControllerTest {
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
 
         //When //Then
-        mockMvc.perform(get("/service-types/1"))
+        mockMvc.perform(get("/service-type/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Tuns"))
@@ -95,7 +95,7 @@ class ServiceTypeControllerTest {
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
 
         //When //Then
-        mockMvc.perform(get("/service-types/name/Tuns"))
+        mockMvc.perform(get("/service-type/name/Tuns"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Tuns"))
@@ -110,7 +110,7 @@ class ServiceTypeControllerTest {
                 .thenThrow(new EntityNotFoundException("Service type with id 999 not found"));
 
         //When //Then
-        mockMvc.perform(get("/service-types/999"))
+        mockMvc.perform(get("/service-type/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -122,7 +122,7 @@ class ServiceTypeControllerTest {
                 .thenThrow(new EntityNotFoundException("Service type with name Coafor not found"));
 
         //When //Then
-        mockMvc.perform(get("/service-types/name/Coafor"))
+        mockMvc.perform(get("/service-type/name/Coafor"))
                 .andExpect(status().isNotFound());
     }
 
@@ -140,7 +140,7 @@ class ServiceTypeControllerTest {
         when(serviceTypeMapper.toServiceTypeDTO(saved)).thenReturn(outputDto);
 
         //When //Then
-        mockMvc.perform(post("/service-types")
+        mockMvc.perform(post("/service-type")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isCreated())
@@ -155,7 +155,7 @@ class ServiceTypeControllerTest {
         ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, "", 30);
 
         //When //Then
-        mockMvc.perform(post("/service-types")
+        mockMvc.perform(post("/service-type")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isBadRequest());
@@ -167,7 +167,7 @@ class ServiceTypeControllerTest {
         ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, null, 30);
 
         //When //Then
-        mockMvc.perform(post("/service-types")
+        mockMvc.perform(post("/service-type")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isBadRequest());
@@ -179,7 +179,7 @@ class ServiceTypeControllerTest {
         ServiceTypeDTO inputDTO = new ServiceTypeDTO(null, "Tuns", null);
 
         //When //Then
-        mockMvc.perform(post("/service-types")
+        mockMvc.perform(post("/service-type")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isBadRequest());
@@ -204,7 +204,7 @@ class ServiceTypeControllerTest {
         when(serviceTypeMapper.toServiceTypeDTO(updated)).thenReturn(updatedDTO);
 
         //When //Then
-        mockMvc.perform(put("/service-types/1")
+        mockMvc.perform(put("/service-type/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isOk())
@@ -219,7 +219,7 @@ class ServiceTypeControllerTest {
         ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1L, null, 60);
 
         //When //Then
-        mockMvc.perform(put("/service-types/1")
+        mockMvc.perform(put("/service-type/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidDTO)))
             .andExpect(status().isBadRequest());
@@ -231,7 +231,7 @@ class ServiceTypeControllerTest {
         ServiceTypeDTO invalidDTO = new ServiceTypeDTO(1L, " ", 60);
 
         //When //Then
-        mockMvc.perform(put("/service-types/1")
+        mockMvc.perform(put("/service-type/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDTO)))
                 .andExpect(status().isBadRequest());
@@ -246,7 +246,7 @@ class ServiceTypeControllerTest {
                 .thenThrow(new EntityNotFoundException("Service type with id 999 not found"));
 
         //When //Then
-        mockMvc.perform(put("/service-types/999")
+        mockMvc.perform(put("/service-type/999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto)))
                 .andExpect(status().isNotFound());
@@ -258,7 +258,7 @@ class ServiceTypeControllerTest {
         Long id = 1L;
 
         //When //Then
-        mockMvc.perform(delete("/service-types/" + id))
+        mockMvc.perform(delete("/service-type/" + id))
                 .andExpect(status().isNoContent());
     }
 
@@ -270,7 +270,7 @@ class ServiceTypeControllerTest {
                 .when(serviceTypeService).deleteById(id);
 
         // When + Then
-        mockMvc.perform(delete("/service-types/" + id))
+        mockMvc.perform(delete("/service-type/" + id))
                 .andExpect(status().isNotFound());
     }
 
@@ -280,7 +280,7 @@ class ServiceTypeControllerTest {
         String name = "Coafor";
 
         // When + Then
-        mockMvc.perform(delete("/service-types/name/" + name))
+        mockMvc.perform(delete("/service-type/name/" + name))
                 .andExpect(status().isNoContent());
     }
 
@@ -292,7 +292,7 @@ class ServiceTypeControllerTest {
                 .when(serviceTypeService).deleteByName(name);
 
         // When + Then
-        mockMvc.perform(delete("/service-types/name/" + name))
+        mockMvc.perform(delete("/service-type/name/" + name))
                 .andExpect(status().isNotFound());
     }
 }
