@@ -1,7 +1,9 @@
 package com.hairhub.backend.service;
 
+import com.hairhub.backend.dto.ClientCreateDTO;
 import com.hairhub.backend.entity.Client;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
+import com.hairhub.backend.mapper.ClientMapper;
 import com.hairhub.backend.repository.ClientRepository;
 import com.hairhub.backend.service.validators.PhoneValidation;
 import jakarta.validation.ValidationException;
@@ -25,18 +27,23 @@ class ClientServiceTest {
     @Mock
     private PhoneValidation phoneValidation;
 
+    @Mock
+    private ClientMapper clientMapper;
+
     private ClientService clientService;
 
     @BeforeEach
     void setUp() {
-        clientService = new ClientService(clientRepository, phoneValidation);
+        clientService = new ClientService(clientRepository, phoneValidation, clientMapper);
     }
 
     @Test
-    void create_withValidClient_savesAndReturnsClient(){
+    void create_withValidClient_savesAndReturnsClient() {
         //Given
-        Client input = new Client("Ion", "0725475548", "ion@mail.de");
-        when(clientRepository.save(input)).thenReturn(input);
+        ClientCreateDTO input = new ClientCreateDTO("Ion", "0725475548", "ion@mail.de");
+        Client mappedClient = new Client("Ion", "0725475548", "ion@mail.de");
+        when(clientMapper.toClient(input)).thenReturn(mappedClient);
+        when(clientRepository.save(mappedClient)).thenReturn(mappedClient);
 
         //When
         Client result = clientService.create(input);
@@ -45,23 +52,24 @@ class ClientServiceTest {
         assertEquals("Ion", result.getName());
         assertEquals("0725475548", result.getPhone());
         assertEquals("ion@mail.de", result.getEmail());
-        verify(clientRepository).save(input);
+        verify(clientRepository).save(mappedClient);
     }
 
     @Test
-    void create_withInvalidPhone_throwsException(){
+    void create_withInvalidPhone_throwsException() {
         //Given
-        Client input = new Client("Ion", "+40725475548", "ion@mail.de");
+        ClientCreateDTO input = new ClientCreateDTO("Ion", "+40725475548", "ion@mail.de");
+        Client mappedClient = new Client("Ion", "+40725475548", "ion@mail.de");
         doThrow(new ValidationException("Invalid Phone"))
-        .when(phoneValidation).validate(input.getPhone());
+                .when(phoneValidation).validate(input.phone());
 
         //When //Then
-        assertThrows(ValidationException.class, ()->clientService.create(input));
-        verify(clientRepository, never()).save(input);
+        assertThrows(ValidationException.class, () -> clientService.create(input));
+        verify(clientRepository, never()).save(mappedClient);
     }
 
     @Test
-    void update_withValidClient_savesAndReturns(){
+    void update_withValidClient_savesAndReturns() {
         //Given
         Client input = new Client("Ion", "0725475548", "ion@mail.de");
         input.setName("Vasile");
@@ -79,23 +87,26 @@ class ClientServiceTest {
     }
 
     @Test
-    void update_withInvalidPhone_throwsException(){
+    void update_withInvalidPhone_throwsException() {
         //Given
         Client input = new Client("Ion", "+40725475548", "ion@mail.de");
         doThrow(new ValidationException("Invalid Phone"))
                 .when(phoneValidation).validate(input.getPhone());
 
         //When //Then
-        assertThrows(ValidationException.class, ()->clientService.update(input));
+        assertThrows(ValidationException.class, () -> clientService.update(input));
         verify(clientRepository, never()).save(input);
     }
 
     @Test
-    void findById_withExistentId_returnsClient(){
+    void findById_withExistentId_returnsClient() {
         //Given
         Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
+        Client client = mock(Client.class);
+        when(client.getId()).thenReturn(id);
+        when(client.getName()).thenReturn("Ion");
+        when(client.getPhone()).thenReturn("0734654749");
+        when(client.getEmail()).thenReturn("ion@test.ro");
         when(clientRepository.findById(id)).thenReturn(Optional.of(client));
 
         //When
@@ -109,7 +120,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findById_withNonExistentId_throwsEntityNotFoundException(){
+    void findById_withNonExistentId_throwsEntityNotFoundException() {
         //Given
         Long id = 999L;
         when(clientRepository.findById(id)).thenReturn(Optional.empty());
@@ -117,11 +128,11 @@ class ClientServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->clientService.findById(id));
+        assertThrows(EntityNotFoundException.class, () -> clientService.findById(id));
     }
 
     @Test
-    void findById_negativeId_throwsEntityNotFoundException(){
+    void findById_negativeId_throwsEntityNotFoundException() {
         //Given
         Long id = -1L;
         when(clientRepository.findById(id)).thenReturn(Optional.empty());
@@ -129,15 +140,18 @@ class ClientServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->clientService.findById(id));
+        assertThrows(EntityNotFoundException.class, () -> clientService.findById(id));
     }
 
     @Test
-    void findByPhone_withExistentPhoneNumber_returnsClient(){
+    void findByPhone_withExistentPhoneNumber_returnsClient() {
         //Given
         Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
+        Client client = mock(Client.class);
+        when(client.getId()).thenReturn(id);
+        when(client.getName()).thenReturn("Ion");
+        when(client.getPhone()).thenReturn("0734654749");
+        when(client.getEmail()).thenReturn("ion@test.ro");
         when(clientRepository.findByPhone(client.getPhone())).thenReturn(Optional.of(client));
 
         //When
@@ -151,7 +165,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findByPhone_withNonExistentPhoneNumber_throwsEntityNotFoundException(){
+    void findByPhone_withNonExistentPhoneNumber_throwsEntityNotFoundException() {
         //Given
         String missing = "0745678418";
         when(clientRepository.findByPhone(missing)).thenReturn(Optional.empty());
@@ -159,15 +173,18 @@ class ClientServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->clientService.findByPhone(missing));
+        assertThrows(EntityNotFoundException.class, () -> clientService.findByPhone(missing));
     }
 
     @Test
-    void findByEmail_withExistentEmail_returnsClient(){
+    void findByEmail_withExistentEmail_returnsClient() {
         //Given
         Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
+        Client client = mock(Client.class);
+        when(client.getId()).thenReturn(id);
+        when(client.getName()).thenReturn("Ion");
+        when(client.getPhone()).thenReturn("0734654749");
+        when(client.getEmail()).thenReturn("ion@test.ro");
         when(clientRepository.findByEmail(client.getEmail())).thenReturn(Optional.of(client));
 
         //When
@@ -181,7 +198,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findByEmail_withNonExistentEmail_throwsEntityNotFoundException(){
+    void findByEmail_withNonExistentEmail_throwsEntityNotFoundException() {
         //Given
         String missing = "missing@de.ro";
         when(clientRepository.findByEmail(missing)).thenReturn(Optional.empty());
@@ -189,15 +206,14 @@ class ClientServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->clientService.findByEmail(missing));
+        assertThrows(EntityNotFoundException.class, () -> clientService.findByEmail(missing));
     }
 
     @Test
-    void findByName_withExistentName_returnsClientList(){
+    void findByName_withExistentName_returnsClientList() {
         //Given
-        Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
+        Client client = mock(Client.class);
+        when(client.getName()).thenReturn("Ion");
         when(clientRepository.findByName(client.getName())).thenReturn(List.of(client));
 
         //When
@@ -209,7 +225,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void findByName_withNonExistentName_returnsEmptyList(){
+    void findByName_withNonExistentName_returnsEmptyList() {
         //Given
         String missing = "missing";
         when(clientRepository.findByName(missing)).thenReturn(List.of());
@@ -222,11 +238,14 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAll_returnsClientList(){
+    void findAll_returnsClientList() {
         //Given
         Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
+        Client client = mock(Client.class);
+        when(client.getId()).thenReturn(id);
+        when(client.getName()).thenReturn("Ion");
+        when(client.getPhone()).thenReturn("0734654749");
+        when(client.getEmail()).thenReturn("ion@test.ro");
         when(clientRepository.findAll()).thenReturn(List.of(client));
 
         //When
@@ -234,19 +253,17 @@ class ClientServiceTest {
 
         //Then
         assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getId());
+        assertEquals(1L, result.get(0).getId());
         assertEquals("Ion", result.get(0).getName());
         assertEquals("0734654749", result.get(0).getPhone());
         assertEquals("ion@test.ro", result.get(0).getEmail());
     }
 
     @Test
-    void findAllActive_returnsClientList_withActive(){
+    void findAllActive_returnsClientList_withActive() {
         //Given
-        Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
-        client.setIsActive(true);
+        Client client = mock(Client.class);
+        when(client.getIsActive()).thenReturn(true);
         when(clientRepository.findByIsActiveIsTrue()).thenReturn(List.of(client));
 
         //When
@@ -258,12 +275,10 @@ class ClientServiceTest {
     }
 
     @Test
-    void findAllInactive_returnsClientList_withInactive(){
+    void findAllInactive_returnsClientList_withInactive() {
         //Given
-        Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
-        client.setIsActive(false);
+        Client client = mock(Client.class);
+        when(client.getIsActive()).thenReturn(false);
         when(clientRepository.findByIsActiveIsFalse()).thenReturn(List.of(client));
 
         //When
@@ -275,16 +290,15 @@ class ClientServiceTest {
     }
 
     @Test
-    void deactivate_withValidId_setIsInactiveAndSaves(){
+    void deactivate_withValidId_setIsInactiveAndSaves() {
         //Given
         Long id = 1L;
-        Client client = new Client("Ion", "0734654749", "ion@test.ro");
-        client.setId(id);
+        Client client = new Client("Ion", "0726947524", "ion@test.ro");
         client.setIsActive(true);
         when(clientRepository.findById(id)).thenReturn(Optional.of(client));
 
         //When
-        clientService.deactivate(client.getId());
+        clientService.deactivate(id);
 
         //Then
         assertFalse(client.getIsActive());
@@ -292,7 +306,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void deactivate_withInvalidId_throwsEntityNotFoundException(){
+    void deactivate_withInvalidId_throwsEntityNotFoundException() {
         //Given
         Long notFound = 999L;
         when(clientRepository.findById(notFound)).thenReturn(Optional.empty());
@@ -300,6 +314,6 @@ class ClientServiceTest {
         //When
 
         //Then
-        assertThrows(EntityNotFoundException.class, ()->clientService.deactivate(notFound));
+        assertThrows(EntityNotFoundException.class, () -> clientService.deactivate(notFound));
     }
 }

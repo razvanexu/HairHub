@@ -57,12 +57,12 @@ class AppointmentControllerTest {
     }
 
     @Test
-    void getAppointmens_returnsEmptyList() throws Exception {
+    void getAppointments_returnsEmptyList() throws Exception {
         //Given
         when(appointmentService.search(null, null, null)).thenReturn(List.of());
 
         //When //Then
-        mockMvc.perform(get("/appointments"))
+        mockMvc.perform(get("/appointment"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
@@ -80,7 +80,7 @@ class AppointmentControllerTest {
         when(appointmentMapper.toAppointmentDTO(appointment)).thenReturn(dto);
 
         //When //Then
-        mockMvc.perform(get("/appointments"))
+        mockMvc.perform(get("/appointment"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -104,7 +104,7 @@ class AppointmentControllerTest {
         when(appointmentMapper.toAppointmentDTO(appointment)).thenReturn(dto);
 
         //When //Then
-        mockMvc.perform(get("/appointments/1"))
+        mockMvc.perform(get("/appointment/1"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.clientId").value(1))
@@ -121,7 +121,7 @@ class AppointmentControllerTest {
                 .thenThrow(new EntityNotFoundException("Appointment with id 999 not found"));
 
         //When //Then
-        mockMvc.perform(get("/appointments/999"))
+        mockMvc.perform(get("/appointment/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -140,7 +140,7 @@ class AppointmentControllerTest {
         when(appointmentMapper.toAppointmentDTO(saved)).thenReturn(outputDTO);
 
         //When //Then
-        mockMvc.perform(post("/appointments")
+        mockMvc.perform(post("/appointment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isCreated())
@@ -159,7 +159,7 @@ class AppointmentControllerTest {
                 1L, startTime, 30);
 
         //When //Then
-        mockMvc.perform(post("/appointments")
+        mockMvc.perform(post("/appointment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDTO)))
                 .andExpect(status().isBadRequest());
@@ -172,7 +172,7 @@ class AppointmentControllerTest {
                 null, startTime, 30);
 
         //When //Then
-        mockMvc.perform(post("/appointments")
+        mockMvc.perform(post("/appointment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDTO)))
                 .andExpect(status().isBadRequest());
@@ -185,7 +185,7 @@ class AppointmentControllerTest {
                 1L, null, 30);
 
         //When //Then
-        mockMvc.perform(post("/appointments")
+        mockMvc.perform(post("/appointment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDTO)))
                 .andExpect(status().isBadRequest());
@@ -198,7 +198,7 @@ class AppointmentControllerTest {
                 1L, startTime, null);
 
         //When //Then
-        mockMvc.perform(post("/appointments")
+        mockMvc.perform(post("/appointment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDTO)))
                 .andExpect(status().isBadRequest());
@@ -210,7 +210,7 @@ class AppointmentControllerTest {
         Long id = 1L;
 
         //When //Then
-        mockMvc.perform(patch("/appointments/1/cancel", id))
+        mockMvc.perform(patch("/appointment/1/cancel", id))
                 .andExpect(status().isNoContent());
         verify(appointmentService).cancel(id);
     }
@@ -223,7 +223,7 @@ class AppointmentControllerTest {
                 .when(appointmentService).cancel(id);
 
         //When //Then
-        mockMvc.perform(patch("/appointments/999/cancel", id))
+        mockMvc.perform(patch("/appointment/999/cancel", id))
                 .andExpect(status().isNotFound());
     }
 }

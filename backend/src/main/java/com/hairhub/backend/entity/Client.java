@@ -27,7 +27,8 @@ public class Client {
     @Column(nullable = false)
     private Boolean isActive;
 
-    public Client() {}
+    public Client() {
+    }
 
     public Client(String name, String phone, String email) {
         this.name = name;
@@ -37,10 +38,6 @@ public class Client {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
