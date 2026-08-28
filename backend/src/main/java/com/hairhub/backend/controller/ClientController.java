@@ -68,7 +68,7 @@ public class ClientController {
         return ResponseEntity.ok(inActiveClients);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> updateClient(@Valid @RequestBody ClientCreateDTO dto,
                                                           @PathVariable Long id) {
         Client existing = clientService.findById(id);

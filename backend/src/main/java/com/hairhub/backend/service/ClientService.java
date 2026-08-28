@@ -101,10 +101,14 @@ public class ClientService {
             return findByName(name);
         }
         if (phone != null) {
-            return Collections.singletonList(findByPhone(phone));
+            return clientRepository.findByPhone(phone)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
         }
         if (email != null) {
-            return Collections.singletonList(findByEmail(email));
+            return clientRepository.findByEmail(email)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
         }
         return findAll();
     }
