@@ -7,6 +7,7 @@ import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.mapper.EmployeeMapper;
 import com.hairhub.backend.service.EmployeeService;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -263,6 +264,30 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$[0].role").value(EmployeeRole.FRIZER.toString()))
                 .andExpect(jsonPath("$[0].isActive").value(true));
 
+    }
+
+    @Test
+    void searchEmployees_withInvalidRole_returns400() throws Exception {
+        //Given //When //Then
+        mockMvc.perform(get("/employee")
+                        .param("role", "MANAGER_INEXISTENT"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void postEmployee_withInvalidPhoneFormat_returns400() throws Exception {
+        //Given
+        EmployeeCreateDTO inputDTO = new EmployeeCreateDTO(
+                "Ion", "+40725475548", "ion@test.ro", EmployeeRole.FRIZER);
+        when(employeeService.create(inputDTO))
+                .thenThrow(new ValidationException(
+                        "Phone must be a valid Romanian mobile number (07xxxxxxxx)"));
+
+        //When //Then
+        mockMvc.perform(post("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputDTO)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
