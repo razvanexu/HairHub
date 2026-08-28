@@ -1,13 +1,16 @@
 package com.hairhub.backend.service;
 
+import com.hairhub.backend.dto.EmployeeCreateDTO;
 import com.hairhub.backend.entity.Employee;
 import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
+import com.hairhub.backend.mapper.EmployeeMapper;
 import com.hairhub.backend.repository.EmployeeRepository;
 import com.hairhub.backend.service.validators.PhoneValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -16,27 +19,30 @@ public class EmployeeService {
     private static final String NOT_FOUND_SUFFIX = " not found";
     private final EmployeeRepository employeeRepository;
     private final PhoneValidation phoneValidation;
+    private final EmployeeMapper employeeMapper;
 
-    public EmployeeService(EmployeeRepository employeeRepository, PhoneValidation phoneValidation) {
+    public EmployeeService(EmployeeRepository employeeRepository, PhoneValidation phoneValidation, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.phoneValidation = phoneValidation;
+        this.employeeMapper = employeeMapper;
     }
 
-    public Employee create(Employee employee){
-        phoneValidation.validate(employee.getPhone());
+    public Employee create(EmployeeCreateDTO employeeCreateDTO) {
+        phoneValidation.validate(employeeCreateDTO.phone());
+        Employee employee = employeeMapper.toEmployee(employeeCreateDTO);
         Employee saved = employeeRepository.save(employee);
         log.info("[create] Employee with id {} has been created", saved.getId());
         return saved;
     }
 
-    public Employee update(Employee employee){
+    public Employee update(Employee employee) {
         phoneValidation.validate(employee.getPhone());
         Employee updated = employeeRepository.save(employee);
         log.info("[update] Employee with id {} has been updated", updated.getId());
         return updated;
     }
 
-    public Employee findById(Long id){
+    public Employee findById(Long id) {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("[findById] Employee with id {} not found", id);
@@ -44,19 +50,19 @@ public class EmployeeService {
                 });
     }
 
-    public List<Employee> findByName(String name){
+    public List<Employee> findByName(String name) {
         List<Employee> namedEmployees = employeeRepository.findByName(name);
         log.debug("[findByName] Found {} employee(s)", namedEmployees.size());
         return namedEmployees;
     }
 
-    public List<Employee> findAll(){
+    public List<Employee> findAll() {
         List<Employee> allEmployees = employeeRepository.findAll();
         log.debug("[findAll] Found {} employees(s)", allEmployees.size());
         return allEmployees;
     }
 
-    public Employee findByPhone(String phone){
+    public Employee findByPhone(String phone) {
         return employeeRepository.findByPhone(phone)
                 .orElseThrow(() -> {
                     log.warn("[findByPhone] Employee with Phone {} not found", phone);
@@ -64,7 +70,7 @@ public class EmployeeService {
                 });
     }
 
-    public Employee findByEmail(String email){
+    public Employee findByEmail(String email) {
         return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("[findByEmail] Employee with email {} not found", email);
@@ -72,20 +78,20 @@ public class EmployeeService {
                 });
     }
 
-    public List<Employee> findByRole(EmployeeRole role){
+    public List<Employee> findByRole(EmployeeRole role) {
         List<Employee> employeesByRole = employeeRepository.findByRole(role);
         log.debug("[findByRole] Found {} employees(s)", employeesByRole.size());
         return employeesByRole;
     }
 
     public List<Employee> findAllActive() {
-        List<Employee> activeEmployees =  employeeRepository.findByIsActiveIsTrue();
+        List<Employee> activeEmployees = employeeRepository.findByIsActiveIsTrue();
         log.debug("[findAllActive] Found {} employee(s)", activeEmployees.size());
         return activeEmployees;
     }
 
     public List<Employee> findAllInactive() {
-        List<Employee> inactiveEmployees =  employeeRepository.findByIsActiveIsFalse();
+        List<Employee> inactiveEmployees = employeeRepository.findByIsActiveIsFalse();
         log.debug("[findAllInactive] Found {} employee(s)", inactiveEmployees.size());
         return inactiveEmployees;
     }
@@ -97,5 +103,25 @@ public class EmployeeService {
         log.info("[deactivate] Employee with id {} has been deactivated", id);
 
         //TODO: implement messaging trigger
+    }
+
+    public List<Employee> search(String name, String phone, String email, EmployeeRole role) {
+        if (name != null) {
+            return findByName(name);
+        }
+        if (phone != null) {
+            return employeeRepository.findByPhone(phone)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
+        }
+        if (email != null) {
+            return employeeRepository.findByEmail(email)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
+        }
+        if (role != null) {
+            return findByRole(role);
+        }
+        return findAll();
     }
 }

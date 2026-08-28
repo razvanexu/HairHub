@@ -1,8 +1,10 @@
 package com.hairhub.backend.service;
 
+import com.hairhub.backend.dto.EmployeeCreateDTO;
 import com.hairhub.backend.entity.Employee;
 import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
+import com.hairhub.backend.mapper.EmployeeMapper;
 import com.hairhub.backend.repository.EmployeeRepository;
 import com.hairhub.backend.service.validators.PhoneValidation;
 import jakarta.validation.ValidationException;
@@ -28,16 +30,21 @@ class EmployeeServiceTest {
 
     private EmployeeService employeeService;
 
+    @Mock
+    private EmployeeMapper employeeMapper;
+
     @BeforeEach
     void setup() {
-        employeeService = new EmployeeService(employeeRepository, phoneValidation);
+        employeeService = new EmployeeService(employeeRepository, phoneValidation, employeeMapper);
     }
 
     @Test
     void create_withValidEmployee_savesAndReturnsEmployee() {
         //Given
-        Employee input = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
-        when(employeeRepository.save(input)).thenReturn(input);
+        EmployeeCreateDTO input = new EmployeeCreateDTO("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee mappedEmployee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        when(employeeMapper.toEmployee(input)).thenReturn(mappedEmployee);
+        when(employeeRepository.save(mappedEmployee)).thenReturn(mappedEmployee);
 
         //When
         Employee result = employeeService.create(input);
@@ -47,19 +54,22 @@ class EmployeeServiceTest {
         assertEquals("0725475548", result.getPhone());
         assertEquals("ion@mail.de", result.getEmail());
         assertEquals(EmployeeRole.FRIZER, result.getRole());
-        verify(employeeRepository).save(input);
+        verify(employeeRepository).save(mappedEmployee);
     }
 
     @Test
     void create_withInvalidPhone_throwsException() {
         //Given
-        Employee input = new Employee("Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        EmployeeCreateDTO input = new EmployeeCreateDTO(
+                "Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee mappedEmployee = new Employee(
+                "Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
         doThrow(new ValidationException("Invalid Phone"))
-                .when(phoneValidation).validate(input.getPhone());
+                .when(phoneValidation).validate(input.phone());
 
         //When //Then
         assertThrows(ValidationException.class, () -> employeeService.create(input));
-        verify(employeeRepository, never()).save(input);
+        verify(employeeRepository, never()).save(mappedEmployee);
     }
 
     @Test
