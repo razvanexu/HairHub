@@ -2,7 +2,7 @@ name: hairhub
 
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16-alpine'
     environment:
       - 'POSTGRES_DB=hairhub'
       - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
