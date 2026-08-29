@@ -1,3 +1,5 @@
+name: hairhub
+
 services:
   postgres:
     image: 'postgres:latest'
