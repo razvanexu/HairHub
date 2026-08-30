@@ -1,0 +1,79 @@
+.hero {
+    display: flex;
+    align-items: center;
+    padding: 4rem;
+    background: #14110F;
+    font-family: Inter, sans-serif;
+}
+
+.textColumn {
+    max-width: 500px;
+    padding: 0 0 0 0;
+    text-align: left;
+}
+
+.h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    color: #F2EDE5;
+    letter-spacing: 0.1rem;
+}
+
+.eyebrow {
+    color: #C79A4A;
+}
+
+.subtext {
+    color: #ADA196;
+    padding: 0 3.5rem 0 0;
+}
+
+.imagePlaceholder {
+    flex: 1;
+    aspect-ratio: 4/3;
+    background: #241F1B;
+    border-width: 0.1rem;
+    border-style: solid;
+    border-radius: 1rem;
+    border-color: #C7994A;
+}
+
+
+.ctaButton {
+    background: #C79A4A;
+    color: #14110F;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 999px;
+    margin: 2.5rem auto;
+}
+
+.ctaButton:hover {
+    background: #b3893f;
+    cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    /*    Tableta*/
+    .hero {
+        padding: 3rem 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /*    Mobil*/
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2rem;
+        gap: 2rem;
+    }
+
+    .textColumn {
+        max-width: 100%;
+    }
+
+    .imagePlaceholder {
+        width: 100%;
+    }
+}

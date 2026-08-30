@@ -1,0 +1,58 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 4rem;
+    background: #14110F;
+}
+
+.logo {
+    color: #F2EDE6;
+    font-size: 1.4rem;
+}
+
+.bookButton {
+    background: #C79A4A;
+    color: #14110F;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 999px;
+}
+
+.bookButton:hover {
+    background: #b3893f;
+    cursor: pointer;
+}
+
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav a {
+    color: #F2EDE6;
+    text-decoration: none;
+}
+
+.nav a:hover {
+    color: #C79A4A;
+}
+
+@media (max-width: 1024px) {
+    /*    Tableta*/
+    .header {
+        padding: 1rem 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /*    Mobil*/
+    .header {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .nav {
+        gap: 1rem;
+    }
+}
