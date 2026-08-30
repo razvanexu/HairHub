@@ -34,4 +34,5 @@ build/
 
 CLAUDE.md
 .env
+/logs
 
