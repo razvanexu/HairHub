@@ -129,7 +129,7 @@ class AppointmentControllerTest {
     void postAppointment_withValidData_returns201() throws Exception {
         //Given
         AppointmentCreateDTO inputDTO = new AppointmentCreateDTO(
-                1L, 1L, 1L, startTime, 30);
+                1L, 1L, 1L, startTime);
         Appointment saved = new Appointment(
                 client, employee, serviceType, startTime, 30, AppointmentStatus.PENDING);
         AppointmentResponseDTO outputDTO = new AppointmentResponseDTO(
@@ -156,7 +156,7 @@ class AppointmentControllerTest {
     void postAppointment_withNullEmployeeId_returns400() throws Exception {
         //Given
         AppointmentCreateDTO invalidDTO = new AppointmentCreateDTO(1L, null,
-                1L, startTime, 30);
+                1L, startTime);
 
         //When //Then
         mockMvc.perform(post("/appointment")
@@ -169,7 +169,7 @@ class AppointmentControllerTest {
     void postAppointment_withNullServiceTypeId_returns400() throws Exception {
         //Given
         AppointmentCreateDTO invalidDTO = new AppointmentCreateDTO(1L, 1L,
-                null, startTime, 30);
+                null, startTime);
 
         //When //Then
         mockMvc.perform(post("/appointment")
@@ -182,20 +182,7 @@ class AppointmentControllerTest {
     void postAppointment_withNullStartTime_returns400() throws Exception {
         //Given
         AppointmentCreateDTO invalidDTO = new AppointmentCreateDTO(1L, 1L,
-                1L, null, 30);
-
-        //When //Then
-        mockMvc.perform(post("/appointment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidDTO)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void postAppointment_withNullDuration_returns400() throws Exception {
-        //Given
-        AppointmentCreateDTO invalidDTO = new AppointmentCreateDTO(1L, 1L,
-                1L, startTime, null);
+                1L, null);
 
         //When //Then
         mockMvc.perform(post("/appointment")

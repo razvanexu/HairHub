@@ -66,7 +66,7 @@ class AppointmentServiceTest {
         Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
         ServiceType tuns = new ServiceType("tuns", 30);
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime, 30);
+        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime);
         Appointment mappedAppointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.PENDING);
 
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
@@ -92,7 +92,7 @@ class AppointmentServiceTest {
         Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
         ServiceType tuns = new ServiceType("tuns", 30);
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime, 30);
+        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime);
         Appointment mappedAppointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.PENDING);
 
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));

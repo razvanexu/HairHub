@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AppointmentMapperTest {
+class AppointmentMapperTest {
     private final AppointmentMapper mapper = new AppointmentMapper();
 
     @Test
@@ -35,7 +35,7 @@ public class AppointmentMapperTest {
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
 
         AppointmentCreateDTO createDTO = new AppointmentCreateDTO(1L, 1L, 1L,
-                startTime, 30);
+                startTime);
 
         //When
         Appointment result = mapper.toAppointment(createDTO, client, employee, serviceType);
@@ -46,7 +46,6 @@ public class AppointmentMapperTest {
         assertEquals(1L, result.getEmployee().getId());
         assertEquals(1L, result.getServiceType().getId());
         assertEquals(LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0), result.getStartTime());
-        assertEquals(30, result.getDuration());
         assertEquals(AppointmentStatus.PENDING, result.getAppointmentStatus());
     }
 

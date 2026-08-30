@@ -14,7 +14,7 @@ public class AppointmentMapper {
 
     public Appointment toAppointment(AppointmentCreateDTO dto, Client client, Employee employee, ServiceType serviceType) {
         return new Appointment(client, employee, serviceType,
-                dto.startTime(), dto.duration(), AppointmentStatus.PENDING);
+                dto.startTime(), serviceType.getDuration(), AppointmentStatus.PENDING);
     }
 
     public AppointmentResponseDTO toAppointmentDTO(Appointment appointment) {
