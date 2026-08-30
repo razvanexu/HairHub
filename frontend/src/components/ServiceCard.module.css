@@ -1,0 +1,22 @@
+.card {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: #14110F;
+    font-family: Inter, sans-serif;
+    border: 0.1rem solid #C7994A;
+    border-radius: 0.5rem;
+    flex: 1;
+}
+
+.imageContainer {
+    flex: 1;
+    aspect-ratio: 4/3;
+    background: #241F1B;
+    border-width: 0.1rem;
+    border-style: solid;
+    border-radius: 1rem;
+    border-color: #C7994A;
+    width: 100%;
+}
