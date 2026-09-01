@@ -3,7 +3,6 @@ package com.hairhub.backend.controller;
 import com.hairhub.backend.dto.EmployeeCreateDTO;
 import com.hairhub.backend.dto.EmployeeResponseDTO;
 import com.hairhub.backend.entity.Employee;
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.mapper.EmployeeMapper;
 import com.hairhub.backend.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -33,11 +32,9 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeResponseDTO>> searchEmployees(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String phone,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String role) {
-        EmployeeRole roleEnum = role != null ? EmployeeRole.valueOf(role) : null;
+            @RequestParam(required = false) String email) {
         List<EmployeeResponseDTO> foundEmployees = employeeService
-                .search(name, phone, email, roleEnum)
+                .search(name, phone, email)
                 .stream()
                 .map(employeeMapper::toEmployeeDTO)
                 .toList();

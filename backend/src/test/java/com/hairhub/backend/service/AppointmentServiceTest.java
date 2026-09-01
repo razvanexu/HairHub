@@ -6,7 +6,6 @@ import com.hairhub.backend.entity.Client;
 import com.hairhub.backend.entity.Employee;
 import com.hairhub.backend.entity.ServiceType;
 import com.hairhub.backend.entity.enums.AppointmentStatus;
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.mapper.AppointmentMapper;
 import com.hairhub.backend.repository.AppointmentRepository;
@@ -63,7 +62,7 @@ class AppointmentServiceTest {
         //Given
         Long employeeId = 1L;
         Long serviceTypeId = 1L;
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         ServiceType tuns = new ServiceType("tuns", 30);
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime);
@@ -89,7 +88,7 @@ class AppointmentServiceTest {
         //Given
         Long employeeId = 1L;
         Long serviceTypeId = 2L;
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         ServiceType tuns = new ServiceType("tuns", 30);
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime);
@@ -133,7 +132,7 @@ class AppointmentServiceTest {
     @Test
     void findAll_returnsAppointmentList() {
         //Given
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
         Appointment appointment = new Appointment(null, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
@@ -154,7 +153,7 @@ class AppointmentServiceTest {
     void findByClient_returnsAppointmentList() {
         //Given
         Client client = new Client("Ion", "0726951657", "ion@gn.com");
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
         Appointment appointment = new Appointment(client, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
@@ -172,7 +171,7 @@ class AppointmentServiceTest {
     void findByEmployee_returnsAppointmentList() {
         //Given
         Client client = new Client("Ion", "0726951657", "ion@gn.com");
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
         Appointment appointment = new Appointment(client, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
@@ -190,7 +189,7 @@ class AppointmentServiceTest {
     void findByServiceType_returnsAppointmentList() {
         //Given
         Client client = new Client("Ion", "0726951657", "ion@gn.com");
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
         Appointment appointment = new Appointment(client, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
@@ -208,7 +207,7 @@ class AppointmentServiceTest {
     void cancel_findsAppointmentById_changesStatusCancelled() {
         //Given
         Long id = 1L;
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
         ServiceType tuns = new ServiceType("tuns", 30);
         Appointment appointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.CONFIRMED);
