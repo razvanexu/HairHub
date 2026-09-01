@@ -7,6 +7,7 @@ function Header() {
             <nav className={styles.nav}>
                 <a href="/">Servicii</a>
                 <a href="/">Echipa</a>
+
                 <a href="/">Galerie</a>
                 <a href="/">Contact</a>
             </nav>

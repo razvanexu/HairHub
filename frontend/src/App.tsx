@@ -1,15 +1,16 @@
 import './App.css'
-import Header from "./components/Header.tsx";
-import Hero from "./components/Hero.tsx";
-import Services from "./components/Services.tsx";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import HomePage from "./pages/HomePage.tsx";
+import AdminPanel from "./pages/AdminPanel.tsx";
+
 
 function App() {
-    return (
-        <>
-            <Header/>
-            <Hero/>
-            <Services/>
-        </>
+    return (<BrowserRouter>
+            <Routes>
+                <Route path="/" element={<HomePage/>}/>
+                <Route path="/admin" element={<AdminPanel/>}/>
+            </Routes>
+        </BrowserRouter>
     )
 }
 
