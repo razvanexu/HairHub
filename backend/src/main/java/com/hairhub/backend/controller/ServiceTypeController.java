@@ -53,7 +53,7 @@ public class ServiceTypeController {
         return ResponseEntity.ok(sTypeDTO);
     }
 
-    @GetMapping("/price")
+    @GetMapping("/price/{price}")
     public ResponseEntity<List<ServiceTypeResponseDTO>> getServiceByPrice(@PathVariable Integer price) {
         List<ServiceTypeResponseDTO> foundServices = serviceTypeService.findByPrice(price)
                 .stream().map(serviceTypeMapper::toServiceTypeDTO).toList();

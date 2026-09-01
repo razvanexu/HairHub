@@ -109,6 +109,26 @@ class ServiceTypeControllerTest {
     }
 
     @Test
+    void getServiceByPrice_withValidPrice_Returns200() throws Exception {
+        //Given
+        ServiceType serviceType = new ServiceType(
+                "Tuns", 50, 30, null);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(
+                1L, "Tuns", 50, 30, null);
+
+        when(serviceTypeService.findByPrice(50)).thenReturn(List.of(serviceType));
+        when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
+
+        //When //Then
+        mockMvc.perform(get("/service-type/price/50"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Tuns"))
+                .andExpect(jsonPath("$[0].price").value(50))
+                .andExpect(jsonPath("$[0].duration").value(30));
+    }
+
+    @Test
     void getServiceTypeById_withNonExistentId_returns404() throws Exception {
         //Given
 
@@ -270,7 +290,7 @@ class ServiceTypeControllerTest {
     @Test
     void deleteServiceType_withValidId_returns204() throws Exception {
         //Given
-        Long id = 1L;
+        long id = 1L;
 
         //When //Then
         mockMvc.perform(delete("/service-type/" + id))
@@ -310,4 +330,6 @@ class ServiceTypeControllerTest {
         mockMvc.perform(delete("/service-type/name/" + name))
                 .andExpect(status().isNotFound());
     }
+
+
 }
