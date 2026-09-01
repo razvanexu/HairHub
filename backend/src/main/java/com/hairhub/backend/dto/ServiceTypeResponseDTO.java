@@ -5,6 +5,10 @@ public record ServiceTypeResponseDTO(
 
         String name,
 
-        Integer duration
+        Integer price,
+
+        Integer duration,
+
+        String description
 ) {
 }

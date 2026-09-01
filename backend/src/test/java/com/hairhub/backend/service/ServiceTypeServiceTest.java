@@ -13,8 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +35,7 @@ class ServiceTypeServiceTest {
     @Test
     void create_withValidServiceType_savesAndReturns() {
         //Given
-        ServiceType input = new ServiceType("Tuns", 30);
+        ServiceType input = new ServiceType("Tuns", 50, 30, null);
         when(repository.save(input)).thenReturn(input);
 
         //When
@@ -44,7 +43,9 @@ class ServiceTypeServiceTest {
 
         //Then
         assertEquals("Tuns", result.getName());
+        assertEquals(50, result.getPrice());
         assertEquals(30, result.getDuration());
+        assertNull(result.getDescription());
         verify(repository).save(input);
     }
 
@@ -111,8 +112,8 @@ class ServiceTypeServiceTest {
     @Test
     void findAll_withValidServiceType_returnsAllServiceTypes() {
         //Given
-        ServiceType s1 = new ServiceType("Tuns", 30);
-        ServiceType s2 = new ServiceType("Coafor", 60);
+        ServiceType s1 = new ServiceType("Tuns", 50, 30, null);
+        ServiceType s2 = new ServiceType("Coafor", 100, 60, null);
         when(repository.findAll()).thenReturn(List.of(s1, s2));
 
         //When

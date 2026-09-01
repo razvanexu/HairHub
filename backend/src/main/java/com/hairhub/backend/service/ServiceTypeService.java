@@ -23,14 +23,14 @@ public class ServiceTypeService {
 
     public ServiceType create(ServiceType sType) {
         duration.validate(sType.getDuration());
-        ServiceType saved =  sRepo.save(sType);
+        ServiceType saved = sRepo.save(sType);
         log.info("Service type created with id: {}", saved.getId());
         return saved;
     }
 
     public ServiceType update(ServiceType sType) {
         duration.validate(sType.getDuration());
-        ServiceType saved =  sRepo.save(sType);
+        ServiceType saved = sRepo.save(sType);
         log.info("Service type updated with id: {}", saved.getId());
         return saved;
     }
@@ -40,7 +40,7 @@ public class ServiceTypeService {
                 .orElseThrow(() -> {
                     log.warn("Service type not found with id: {}", id);
                     return new EntityNotFoundException("Service type with id " + id + " not found");
-        });
+                });
     }
 
     public ServiceType findByName(String name) {
@@ -51,24 +51,30 @@ public class ServiceTypeService {
                 });
     }
 
+    public List<ServiceType> findByPrice(Integer price) {
+        List<ServiceType> serviceByPrice = sRepo.findByPrice(price);
+        log.debug("[findByPrice] Found {} service(s)", serviceByPrice.size());
+        return serviceByPrice;
+    }
+
     public List<ServiceType> findAll() {
         log.debug("Fetching all service types");
         return sRepo.findAll();
     }
 
     public void deleteById(Long id) {
-        if(!sRepo.existsById(id)) {
+        if (!sRepo.existsById(id)) {
             log.warn("Attempted to delete non-existent service type with id: {}", id);
-            throw new EntityNotFoundException("Service type with id " + id+" not found");
+            throw new EntityNotFoundException("Service type with id " + id + " not found");
         }
         sRepo.deleteById(id);
         log.info("Service type deleted: {}", id);
     }
 
     public void deleteByName(String name) {
-        if(!sRepo.findByName(name).isPresent()){
+        if (!sRepo.findByName(name).isPresent()) {
             log.warn("Attempted to delete non-existent service type with name: {}", name);
-            throw new EntityNotFoundException("Service type "+ name +" not found");
+            throw new EntityNotFoundException("Service type " + name + " not found");
         }
         sRepo.deleteByName(name);
         log.info("Service type deleted: {}", name);
