@@ -1,4 +1,5 @@
 import {useState} from "react";
+import styles from './ServiceTypeForm.module.css'
 
 function ServiceTypeForm() {
     const [name, setName] = useState("");
@@ -34,42 +35,42 @@ function ServiceTypeForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            {error && <p>{error}</p>}
-            {success && <p>Serviciu salvat</p>}
-            <input
-                type="text"
-                placeholder="Service Name"
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+        <form onSubmit={handleSubmit} className={styles.form}>
+            {error && <p className={styles.error}>{error}</p>}
+            {success && <p className={styles.success}>Serviciu salvat</p>}
+            <input className={styles.input}
+                   type="text"
+                   placeholder="Service Name"
+                   name="name"
+                   value={name}
+                   onChange={(e) => setName(e.target.value)}
             />
 
-            <input
-                type="number"
-                placeholder="Service Price"
-                name="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+            <input className={styles.input}
+                   type="number"
+                   placeholder="Service Price"
+                   name="price"
+                   value={price}
+                   onChange={(e) => setPrice(e.target.value)}
             />
 
-            <input
-                type="number"
-                placeholder="Service Duration"
-                name="duration"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
+            <input className={styles.input}
+                   type="number"
+                   placeholder="Service Duration"
+                   name="duration"
+                   value={duration}
+                   onChange={(e) => setDuration(e.target.value)}
             />
 
-            <textarea
-                placeholder="Service Description"
-                name="description"
-                value={description}
-                onChange={(e) =>
-                    setDescription(e.target.value)}
-                rows={4}
+            <textarea className={styles.textArea}
+                      placeholder="Service Description"
+                      name="description"
+                      value={description}
+                      onChange={(e) =>
+                          setDescription(e.target.value)}
+                      rows={4}
             />
-            <button type={"submit"}>Submit</button>
+            <button type={"submit"} className={styles.submitButton}>Submit</button>
         </form>
     )
 }

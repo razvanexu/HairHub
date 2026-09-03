@@ -1,4 +1,5 @@
 import {useState} from "react";
+import styles from './EmployeeForm.module.css'
 
 function EmployeeForm() {
     const [name, setName] = useState('')
@@ -22,42 +23,41 @@ function EmployeeForm() {
             if (!response.ok) {
                 throw new Error(response.statusText)
             }
-
             setSuccess(true)
             setName("")
             setPhone("")
             setEmail("")
         } catch (err) {
-            setError("Nu s-a salvat")
+            setError("Nu s-a salvat");
         }
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            {error && <p>{error}</p>}
-            {success && <p>Angajat salvat</p>}
-            <input
-                type="text"
-                placeholder="Employee Name"
-                name="employeeName"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+        <form onSubmit={handleSubmit} className={styles.form}>
+            {error && <p className={styles.error}>{error}</p>}
+            {success && <p className={styles.success}>Angajat salvat</p>}
+            <input className={styles.input}
+                   type="text"
+                   placeholder="Employee Name"
+                   name="employeeName"
+                   value={name}
+                   onChange={(e) => setName(e.target.value)}
             />
-            <input
-                type="text"
-                placeholder="Phone Number"
-                name="phoneNumber"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+            <input className={styles.input}
+                   type="text"
+                   placeholder="Phone Number"
+                   name="phoneNumber"
+                   value={phone}
+                   onChange={(e) => setPhone(e.target.value)}
             />
-            <input
-                type="email"
-                placeholder="Email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+            <input className={styles.input}
+                   type="email"
+                   placeholder="Email"
+                   name="email"
+                   value={email}
+                   onChange={(e) => setEmail(e.target.value)}
             />
-            <button type={"submit"}>Submit</button>
+            <button type={"submit"} className={styles.submitButton}>Submit</button>
         </form>
     )
 }
