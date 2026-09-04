@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmployeeMapper {
     public Employee toEmployee(EmployeeCreateDTO dto) {
-        return new Employee(dto.name(), dto.phone(), dto.email(), dto.role());
+        return new Employee(dto.name(), dto.phone(), dto.email());
     }
 
     public EmployeeResponseDTO toEmployeeDTO(Employee employee) {
@@ -17,7 +17,6 @@ public class EmployeeMapper {
                 employee.getName(),
                 employee.getPhone(),
                 employee.getEmail(),
-                employee.getRole(),
                 employee.getIsActive()
         );
     }
@@ -26,6 +25,5 @@ public class EmployeeMapper {
         existing.setName(dto.name());
         existing.setPhone(dto.phone());
         existing.setEmail(dto.email());
-        existing.setRole(dto.role());
     }
 }

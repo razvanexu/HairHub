@@ -1,10 +1,8 @@
 package com.hairhub.backend.entity;
 
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "employees")
@@ -26,22 +24,16 @@ public class Employee {
     @Email
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @NotNull
-    private EmployeeRole role;
-
     @Column(nullable = false)
     private Boolean isActive;
 
     public Employee() {
     }
 
-    public Employee(String name, String phone, String email, EmployeeRole role) {
+    public Employee(String name, String phone, String email) {
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.role = role;
         this.isActive = true;
     }
 
@@ -71,14 +63,6 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public EmployeeRole getRole() {
-        return role;
-    }
-
-    public void setRole(EmployeeRole role) {
-        this.role = role;
     }
 
     public Boolean getIsActive() {

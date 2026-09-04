@@ -1,0 +1,15 @@
+.title {
+    color: #F2EDE5;
+    font-size: 2rem;
+}
+
+.backlink {
+    color: #ADA196;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding-top: 1rem;
+
+    &:hover {
+        color: #C79A4A;
+    }
+}

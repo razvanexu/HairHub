@@ -2,7 +2,6 @@ package com.hairhub.backend.service;
 
 import com.hairhub.backend.dto.EmployeeCreateDTO;
 import com.hairhub.backend.entity.Employee;
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.mapper.EmployeeMapper;
 import com.hairhub.backend.repository.EmployeeRepository;
@@ -41,8 +40,8 @@ class EmployeeServiceTest {
     @Test
     void create_withValidEmployee_savesAndReturnsEmployee() {
         //Given
-        EmployeeCreateDTO input = new EmployeeCreateDTO("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
-        Employee mappedEmployee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        EmployeeCreateDTO input = new EmployeeCreateDTO("Ion", "0725475548", "ion@mail.de");
+        Employee mappedEmployee = new Employee("Ion", "0725475548", "ion@mail.de");
         when(employeeMapper.toEmployee(input)).thenReturn(mappedEmployee);
         when(employeeRepository.save(mappedEmployee)).thenReturn(mappedEmployee);
 
@@ -53,7 +52,6 @@ class EmployeeServiceTest {
         assertEquals("Ion", result.getName());
         assertEquals("0725475548", result.getPhone());
         assertEquals("ion@mail.de", result.getEmail());
-        assertEquals(EmployeeRole.FRIZER, result.getRole());
         verify(employeeRepository).save(mappedEmployee);
     }
 
@@ -61,9 +59,9 @@ class EmployeeServiceTest {
     void create_withInvalidPhone_throwsException() {
         //Given
         EmployeeCreateDTO input = new EmployeeCreateDTO(
-                "Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
+                "Ion", "+40725475548", "ion@mail.de");
         Employee mappedEmployee = new Employee(
-                "Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
+                "Ion", "+40725475548", "ion@mail.de");
         doThrow(new ValidationException("Invalid Phone"))
                 .when(phoneValidation).validate(input.phone());
 
@@ -75,11 +73,10 @@ class EmployeeServiceTest {
     @Test
     void update_withValidEmployee_savesAndReturns() {
         //Given
-        Employee input = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee input = new Employee("Ion", "0725475548", "ion@mail.de");
         input.setName("Vasile");
         input.setPhone("0725475548");
         input.setEmail("Vasile@mail.de");
-        input.setRole(EmployeeRole.OWNER);
         when(employeeRepository.save(input)).thenReturn(input);
 
         //When
@@ -89,13 +86,12 @@ class EmployeeServiceTest {
         assertEquals("Vasile", result.getName());
         assertEquals("0725475548", result.getPhone());
         assertEquals("Vasile@mail.de", result.getEmail());
-        assertEquals(EmployeeRole.OWNER, result.getRole());
     }
 
     @Test
     void update_withInvalidPhone_throwsException() {
         //Given
-        Employee input = new Employee("Ion", "+40725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee input = new Employee("Ion", "+40725475548", "ion@mail.de");
         doThrow(new ValidationException("Invalid Phone"))
                 .when(phoneValidation).validate(input.getPhone());
 
@@ -113,7 +109,6 @@ class EmployeeServiceTest {
         when(employee.getName()).thenReturn("Ion");
         when(employee.getPhone()).thenReturn("0734654749");
         when(employee.getEmail()).thenReturn("ion@test.ro");
-        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findById(id)).thenReturn(Optional.of(employee));
 
         //When
@@ -124,7 +119,6 @@ class EmployeeServiceTest {
         assertEquals("Ion", result.getName());
         assertEquals("0734654749", result.getPhone());
         assertEquals("ion@test.ro", result.getEmail());
-        assertEquals(EmployeeRole.FRIZER, result.getRole());
     }
 
     @Test
@@ -159,7 +153,6 @@ class EmployeeServiceTest {
         when(employee.getName()).thenReturn("Ion");
         when(employee.getPhone()).thenReturn("0734654749");
         when(employee.getEmail()).thenReturn("ion@test.ro");
-        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findByPhone(employee.getPhone())).thenReturn(Optional.of(employee));
 
         //When
@@ -170,7 +163,6 @@ class EmployeeServiceTest {
         assertEquals("Ion", result.getName());
         assertEquals("0734654749", result.getPhone());
         assertEquals("ion@test.ro", result.getEmail());
-        assertEquals(EmployeeRole.FRIZER, result.getRole());
     }
 
     @Test
@@ -193,7 +185,6 @@ class EmployeeServiceTest {
         when(employee.getName()).thenReturn("Ion");
         when(employee.getPhone()).thenReturn("0734654749");
         when(employee.getEmail()).thenReturn("ion@test.ro");
-        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findByEmail(employee.getEmail())).thenReturn(Optional.of(employee));
 
         //When
@@ -204,7 +195,6 @@ class EmployeeServiceTest {
         assertEquals("Ion", result.getName());
         assertEquals("0734654749", result.getPhone());
         assertEquals("ion@test.ro", result.getEmail());
-        assertEquals(EmployeeRole.FRIZER, result.getRole());
     }
 
     @Test
@@ -248,33 +238,6 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void findByRole_withExistentRole_returnsEmployeeList() {
-        //Given
-        Employee employee = mock(Employee.class);
-        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
-        when(employeeRepository.findByRole(employee.getRole())).thenReturn(List.of(employee));
-
-        //When
-        List<Employee> result = employeeService.findByRole(employee.getRole());
-
-        //Then
-        assertEquals(1, result.size());
-        assertEquals(EmployeeRole.FRIZER, result.get(0).getRole());
-    }
-
-    @Test
-    void findByRole_withNoMatches_returnsEmptyList() {
-        //Given
-        when(employeeRepository.findByRole(EmployeeRole.OWNER)).thenReturn(List.of());
-
-        //When
-        List<Employee> result = employeeService.findByRole(EmployeeRole.OWNER);
-
-        //Then
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
     void findAll_returnsEmployeeList() {
         //Given
         Employee employee = mock(Employee.class);
@@ -282,7 +245,6 @@ class EmployeeServiceTest {
         when(employee.getName()).thenReturn("Ion");
         when(employee.getPhone()).thenReturn("0734654749");
         when(employee.getEmail()).thenReturn("ion@test.ro");
-        when(employee.getRole()).thenReturn(EmployeeRole.FRIZER);
         when(employeeRepository.findAll()).thenReturn(List.of(employee));
 
         //When
@@ -294,7 +256,6 @@ class EmployeeServiceTest {
         assertEquals("Ion", result.get(0).getName());
         assertEquals("0734654749", result.get(0).getPhone());
         assertEquals("ion@test.ro", result.get(0).getEmail());
-        assertEquals(EmployeeRole.FRIZER, result.get(0).getRole());
     }
 
     @Test

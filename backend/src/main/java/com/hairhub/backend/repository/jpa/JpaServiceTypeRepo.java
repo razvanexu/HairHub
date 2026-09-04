@@ -9,45 +9,49 @@ import java.util.Optional;
 
 @Repository
 public class JpaServiceTypeRepo implements ServiceTypeRepository {
-    private final SpringDataServiceTypeRepo springDataServiceTypeRepo;
+    private final SpringDataServiceTypeRepository springDataServiceTypeRepository;
 
-    public JpaServiceTypeRepo(SpringDataServiceTypeRepo springDataServiceTypeRepo){
-        this.springDataServiceTypeRepo = springDataServiceTypeRepo;
+    public JpaServiceTypeRepo(SpringDataServiceTypeRepository springDataServiceTypeRepository) {
+        this.springDataServiceTypeRepository = springDataServiceTypeRepository;
     }
-
 
     @Override
     public ServiceType save(ServiceType serviceType) {
-        return springDataServiceTypeRepo.save(serviceType);
+        return springDataServiceTypeRepository.save(serviceType);
     }
 
     @Override
     public Optional<ServiceType> findById(Long id) {
-        return springDataServiceTypeRepo.findById(id);
+        return springDataServiceTypeRepository.findById(id);
     }
 
     @Override
     public Optional<ServiceType> findByName(String name) {
-        return springDataServiceTypeRepo.findByName(name);
+        return springDataServiceTypeRepository.findByName(name);
+    }
+
+    @Override
+    public List<ServiceType> findByPrice(Integer price) {
+        return springDataServiceTypeRepository.findByPrice(price);
     }
 
     @Override
     public List<ServiceType> findAll() {
-        return springDataServiceTypeRepo.findAll();
+        return springDataServiceTypeRepository.findAll();
     }
 
     @Override
     public boolean existsById(Long id) {
-        return springDataServiceTypeRepo.existsById(id);
+        return springDataServiceTypeRepository.existsById(id);
     }
 
     @Override
     public void deleteById(Long id) {
-        springDataServiceTypeRepo.deleteById(id);
+        springDataServiceTypeRepository.deleteById(id);
     }
 
     @Override
     public void deleteByName(String name) {
-        springDataServiceTypeRepo.deleteByName(name);
+        springDataServiceTypeRepository.deleteByName(name);
     }
 }

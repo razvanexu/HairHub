@@ -15,12 +15,14 @@ class ServiceTypeMapperTest {
 
     @Test
     void toServiceType_mapAllFieldsCorrectly() {
-        ServiceTypeCreateDTO dto = new ServiceTypeCreateDTO("Tuns", 30);
+        ServiceTypeCreateDTO dto = new ServiceTypeCreateDTO("Tuns", 50, 30, null);
         ServiceType result = mapper.toServiceType(dto);
 
         assertNull(result.getId());
         assertEquals("Tuns", result.getName());
+        assertEquals(50, result.getPrice());
         assertEquals(30, result.getDuration());
+        assertNull(result.getDescription());
     }
 
     @Test
@@ -28,11 +30,14 @@ class ServiceTypeMapperTest {
         ServiceType sType = mock(ServiceType.class);
         when(sType.getId()).thenReturn(1L);
         when(sType.getName()).thenReturn("Tuns");
+        when(sType.getPrice()).thenReturn(50);
         when(sType.getDuration()).thenReturn(30);
         ServiceTypeResponseDTO dto = mapper.toServiceTypeDTO(sType);
 
         assertEquals(1L, dto.id());
         assertEquals("Tuns", dto.name());
+        assertEquals(50, dto.price());
         assertEquals(30, dto.duration());
+        assertNull(dto.description());
     }
 }

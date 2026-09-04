@@ -8,6 +8,11 @@ public record ServiceTypeCreateDTO(
         String name,
 
         @NotNull
-        Integer duration
+        Integer price,
+
+        @NotNull
+        Integer duration,
+
+        String description
 ) {
 }

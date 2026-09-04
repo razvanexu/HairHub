@@ -52,8 +52,9 @@ class ServiceTypeControllerTest {
     @Test
     void getServiceTypes_returnsListWithItems() throws Exception {
         //Given
-        ServiceType serviceType = new ServiceType("Tuns", 30);
-        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(1L, "Tuns", 30);
+        ServiceType serviceType = new ServiceType("Tuns", 50, 30, null);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(
+                1L, "Tuns", 50, 30, null);
 
         when(serviceTypeService.findAll()).thenReturn(List.of(serviceType));
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
@@ -63,14 +64,17 @@ class ServiceTypeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Tuns"))
+                .andExpect(jsonPath("$[0].price").value(50))
                 .andExpect(jsonPath("$[0].duration").value(30));
     }
 
     @Test
     void getServiceTypeById_withExistingId_returns200() throws Exception {
         //Given
-        ServiceType serviceType = new ServiceType("Tuns", 30);
-        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(1L, "Tuns", 30);
+        ServiceType serviceType = new ServiceType(
+                "Tuns", 50, 30, null);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(
+                1L, "Tuns", 50, 30, null);
 
         when(serviceTypeService.findById(1L)).thenReturn(serviceType);
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
@@ -80,14 +84,17 @@ class ServiceTypeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Tuns"))
+                .andExpect(jsonPath("$.price").value(50))
                 .andExpect(jsonPath("$.duration").value(30));
     }
 
     @Test
     void getServiceTypeByName_withExistingName_returns200() throws Exception {
         //Given
-        ServiceType serviceType = new ServiceType("Tuns", 30);
-        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(1L, "Tuns", 30);
+        ServiceType serviceType = new ServiceType(
+                "Tuns", 50, 30, null);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(
+                1L, "Tuns", 50, 30, null);
 
         when(serviceTypeService.findByName("Tuns")).thenReturn(serviceType);
         when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
@@ -97,7 +104,28 @@ class ServiceTypeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Tuns"))
+                .andExpect(jsonPath("$.price").value(50))
                 .andExpect(jsonPath("$.duration").value(30));
+    }
+
+    @Test
+    void getServiceByPrice_withValidPrice_Returns200() throws Exception {
+        //Given
+        ServiceType serviceType = new ServiceType(
+                "Tuns", 50, 30, null);
+        ServiceTypeResponseDTO serviceTypeDTO = new ServiceTypeResponseDTO(
+                1L, "Tuns", 50, 30, null);
+
+        when(serviceTypeService.findByPrice(50)).thenReturn(List.of(serviceType));
+        when(serviceTypeMapper.toServiceTypeDTO(serviceType)).thenReturn(serviceTypeDTO);
+
+        //When //Then
+        mockMvc.perform(get("/service-type/price/50"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Tuns"))
+                .andExpect(jsonPath("$[0].price").value(50))
+                .andExpect(jsonPath("$[0].duration").value(30));
     }
 
     @Test
@@ -127,10 +155,12 @@ class ServiceTypeControllerTest {
     @Test
     void postServiceType_withValidData_returns201() throws Exception {
         //Given
-        ServiceTypeCreateDTO inputDTO = new ServiceTypeCreateDTO("Tuns", 30);
-        ServiceType entity = new ServiceType("Tuns", 30);
-        ServiceType saved = new ServiceType("Tuns", 30);
-        ServiceTypeResponseDTO outputDto = new ServiceTypeResponseDTO(1L, "Tuns", 30);
+        ServiceTypeCreateDTO inputDTO = new ServiceTypeCreateDTO(
+                "Tuns", 50, 30, null);
+        ServiceType entity = new ServiceType("Tuns", 50, 30, null);
+        ServiceType saved = new ServiceType("Tuns", 50, 30, null);
+        ServiceTypeResponseDTO outputDto = new ServiceTypeResponseDTO(
+                1L, "Tuns", 50, 30, null);
 
         when(serviceTypeMapper.toServiceType(inputDTO)).thenReturn(entity);
         when(serviceTypeService.create(entity)).thenReturn(saved);
@@ -143,13 +173,15 @@ class ServiceTypeControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Tuns"))
+                .andExpect(jsonPath("$.price").value(50))
                 .andExpect(jsonPath("$.duration").value(30));
     }
 
     @Test
     void postServiceType_withEmptyName_returns400() throws Exception {
         //Given
-        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, "", 30);
+        ServiceTypeCreateDTO inputDTO = new ServiceTypeCreateDTO(
+                "", 50, 30, null);
 
         //When //Then
         mockMvc.perform(post("/service-type")
@@ -161,7 +193,8 @@ class ServiceTypeControllerTest {
     @Test
     void postServiceType_withNullName_returns400() throws Exception {
         //Given
-        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, null, 30);
+        ServiceTypeCreateDTO inputDTO = new ServiceTypeCreateDTO(
+                null, 50, 30, null);
 
         //When //Then
         mockMvc.perform(post("/service-type")
@@ -173,7 +206,8 @@ class ServiceTypeControllerTest {
     @Test
     void postServiceType_withNullDuration_returns400() throws Exception {
         //Given
-        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, "Tuns", null);
+        ServiceTypeCreateDTO inputDTO = new ServiceTypeCreateDTO(
+                "Tuns", 50, null, null);
 
         //When //Then
         mockMvc.perform(post("/service-type")
@@ -186,13 +220,15 @@ class ServiceTypeControllerTest {
     void updateServiceType_withValidData_returns200() throws Exception {
         //Given
         Long id = 1L;
-        ServiceType existing = new ServiceType("Tuns", 30);
+        ServiceType existing = new ServiceType("Tuns", 50, 30, null);
 
-        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(null, "Coafor", 60);
+        ServiceTypeResponseDTO inputDTO = new ServiceTypeResponseDTO(
+                null, "Coafor", 60, 30, null);
 
-        ServiceType updated = new ServiceType("Coafor", 60);
+        ServiceType updated = new ServiceType("Coafor", 60, 30, null);
 
-        ServiceTypeResponseDTO updatedDTO = new ServiceTypeResponseDTO(id, "Coafor", 60);
+        ServiceTypeResponseDTO updatedDTO = new ServiceTypeResponseDTO(
+                id, "Coafor", 60, 30, null);
 
         when(serviceTypeService.findById(id)).thenReturn(existing);
         when(serviceTypeService.update(existing)).thenReturn(updated);
@@ -205,13 +241,15 @@ class ServiceTypeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Coafor"))
-                .andExpect(jsonPath("$.duration").value(60));
+                .andExpect(jsonPath("$.price").value(60))
+                .andExpect(jsonPath("$.duration").value(30));
     }
 
     @Test
     void updateServiceType_withNullName_returns400() throws Exception {
         //Given
-        ServiceTypeResponseDTO invalidDTO = new ServiceTypeResponseDTO(1L, null, 60);
+        ServiceTypeResponseDTO invalidDTO = new ServiceTypeResponseDTO(
+                1L, null, 60, 30, null);
 
         //When //Then
         mockMvc.perform(put("/service-type/1")
@@ -223,7 +261,8 @@ class ServiceTypeControllerTest {
     @Test
     void updateServiceType_withBlankName_returns400() throws Exception {
         //Given
-        ServiceTypeResponseDTO invalidDTO = new ServiceTypeResponseDTO(1L, " ", 60);
+        ServiceTypeResponseDTO invalidDTO = new ServiceTypeResponseDTO(
+                1L, " ", 60, 30, null);
 
         //When //Then
         mockMvc.perform(put("/service-type/1")
@@ -236,7 +275,8 @@ class ServiceTypeControllerTest {
     void updateServiceType_withNonExistentId_returns400() throws Exception {
         //Given
         Long id = 999L;
-        ServiceTypeResponseDTO inputDto = new ServiceTypeResponseDTO(null, "Tuns", 30);
+        ServiceTypeResponseDTO inputDto = new ServiceTypeResponseDTO(
+                null, "Tuns", 60, 30, null);
         when(serviceTypeService.findById(id))
                 .thenThrow(new EntityNotFoundException("Service type with id 999 not found"));
 
@@ -250,7 +290,7 @@ class ServiceTypeControllerTest {
     @Test
     void deleteServiceType_withValidId_returns204() throws Exception {
         //Given
-        Long id = 1L;
+        long id = 1L;
 
         //When //Then
         mockMvc.perform(delete("/service-type/" + id))
@@ -290,4 +330,6 @@ class ServiceTypeControllerTest {
         mockMvc.perform(delete("/service-type/name/" + name))
                 .andExpect(status().isNotFound());
     }
+
+
 }

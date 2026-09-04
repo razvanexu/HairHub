@@ -6,7 +6,6 @@ import com.hairhub.backend.entity.Client;
 import com.hairhub.backend.entity.Employee;
 import com.hairhub.backend.entity.ServiceType;
 import com.hairhub.backend.entity.enums.AppointmentStatus;
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.mapper.AppointmentMapper;
 import com.hairhub.backend.repository.AppointmentRepository;
@@ -63,10 +62,10 @@ class AppointmentServiceTest {
         //Given
         Long employeeId = 1L;
         Long serviceTypeId = 1L;
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime, 30);
+        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime);
         Appointment mappedAppointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.PENDING);
 
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
@@ -89,10 +88,10 @@ class AppointmentServiceTest {
         //Given
         Long employeeId = 1L;
         Long serviceTypeId = 2L;
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime, 30);
+        AppointmentCreateDTO dto = new AppointmentCreateDTO(null, employeeId, serviceTypeId, startTime);
         Appointment mappedAppointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.PENDING);
 
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
@@ -133,9 +132,9 @@ class AppointmentServiceTest {
     @Test
     void findAll_returnsAppointmentList() {
         //Given
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         Appointment appointment = new Appointment(null, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
 
@@ -154,9 +153,9 @@ class AppointmentServiceTest {
     void findByClient_returnsAppointmentList() {
         //Given
         Client client = new Client("Ion", "0726951657", "ion@gn.com");
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         Appointment appointment = new Appointment(client, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
         when(appointmentRepository.findByClient(client)).thenReturn(List.of(appointment));
 
@@ -172,9 +171,9 @@ class AppointmentServiceTest {
     void findByEmployee_returnsAppointmentList() {
         //Given
         Client client = new Client("Ion", "0726951657", "ion@gn.com");
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         Appointment appointment = new Appointment(client, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
         when(appointmentRepository.findByEmployee(employee)).thenReturn(List.of(appointment));
 
@@ -190,9 +189,9 @@ class AppointmentServiceTest {
     void findByServiceType_returnsAppointmentList() {
         //Given
         Client client = new Client("Ion", "0726951657", "ion@gn.com");
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         Appointment appointment = new Appointment(client, employee, tuns, startTime, 25, AppointmentStatus.CONFIRMED);
         when(appointmentRepository.findByServiceType(tuns)).thenReturn(List.of(appointment));
 
@@ -208,9 +207,9 @@ class AppointmentServiceTest {
     void cancel_findsAppointmentById_changesStatusCancelled() {
         //Given
         Long id = 1L;
-        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de", EmployeeRole.FRIZER);
+        Employee employee = new Employee("Ion", "0725475548", "ion@mail.de");
         LocalDateTime startTime = LocalDateTime.of(2026, Month.AUGUST, 6, 10, 0);
-        ServiceType tuns = new ServiceType("tuns", 30);
+        ServiceType tuns = new ServiceType("tuns", 50, 30, null);
         Appointment appointment = new Appointment(null, employee, tuns, startTime, 30, AppointmentStatus.CONFIRMED);
         when(appointmentRepository.findById(id)).thenReturn(Optional.of(appointment));
 

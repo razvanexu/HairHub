@@ -1,7 +1,6 @@
 package com.hairhub.backend.repository.jpa;
 
 import com.hairhub.backend.entity.Employee;
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.repository.EmployeeRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +12,7 @@ public class JpaEmployeeRepository implements EmployeeRepository {
 
     private final SpringDataEmployeeRepository springDataEmployeeRepository;
 
-    public JpaEmployeeRepository(SpringDataEmployeeRepository springDataEmployeeRepository){
+    public JpaEmployeeRepository(SpringDataEmployeeRepository springDataEmployeeRepository) {
         this.springDataEmployeeRepository = springDataEmployeeRepository;
     }
 
@@ -40,11 +39,6 @@ public class JpaEmployeeRepository implements EmployeeRepository {
     @Override
     public List<Employee> findByName(String name) {
         return springDataEmployeeRepository.findByName(name);
-    }
-
-    @Override
-    public List<Employee> findByRole(EmployeeRole role){
-        return springDataEmployeeRepository.findByRole(role);
     }
 
     @Override

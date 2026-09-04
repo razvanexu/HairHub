@@ -2,7 +2,6 @@ package com.hairhub.backend.service;
 
 import com.hairhub.backend.dto.EmployeeCreateDTO;
 import com.hairhub.backend.entity.Employee;
-import com.hairhub.backend.entity.enums.EmployeeRole;
 import com.hairhub.backend.exceptions.EntityNotFoundException;
 import com.hairhub.backend.mapper.EmployeeMapper;
 import com.hairhub.backend.repository.EmployeeRepository;
@@ -78,12 +77,6 @@ public class EmployeeService {
                 });
     }
 
-    public List<Employee> findByRole(EmployeeRole role) {
-        List<Employee> employeesByRole = employeeRepository.findByRole(role);
-        log.debug("[findByRole] Found {} employees(s)", employeesByRole.size());
-        return employeesByRole;
-    }
-
     public List<Employee> findAllActive() {
         List<Employee> activeEmployees = employeeRepository.findByIsActiveIsTrue();
         log.debug("[findAllActive] Found {} employee(s)", activeEmployees.size());
@@ -105,7 +98,7 @@ public class EmployeeService {
         //TODO: implement messaging trigger
     }
 
-    public List<Employee> search(String name, String phone, String email, EmployeeRole role) {
+    public List<Employee> search(String name, String phone, String email) {
         if (name != null) {
             return findByName(name);
         }
@@ -118,9 +111,6 @@ public class EmployeeService {
             return employeeRepository.findByEmail(email)
                     .map(Collections::singletonList)
                     .orElse(Collections.emptyList());
-        }
-        if (role != null) {
-            return findByRole(role);
         }
         return findAll();
     }

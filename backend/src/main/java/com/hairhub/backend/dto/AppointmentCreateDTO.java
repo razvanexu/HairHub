@@ -14,9 +14,6 @@ public record AppointmentCreateDTO(
         Long serviceTypeId,
 
         @NotNull
-        LocalDateTime startTime,
-
-        @NotNull
-        Integer duration
+        LocalDateTime startTime
 ) {
 }

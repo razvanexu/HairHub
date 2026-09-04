@@ -53,6 +53,13 @@ public class ServiceTypeController {
         return ResponseEntity.ok(sTypeDTO);
     }
 
+    @GetMapping("/price/{price}")
+    public ResponseEntity<List<ServiceTypeResponseDTO>> getServiceByPrice(@PathVariable Integer price) {
+        List<ServiceTypeResponseDTO> foundServices = serviceTypeService.findByPrice(price)
+                .stream().map(serviceTypeMapper::toServiceTypeDTO).toList();
+        return ResponseEntity.ok(foundServices);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteServiceType(@PathVariable Long id) {
         serviceTypeService.deleteById(id);
